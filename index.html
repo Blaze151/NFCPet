@@ -25,6 +25,20 @@ const PERFILES = {
     ],
     direccion: "Aula 34G, Instituto Tecnológico de la Laguna",
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+  },
+  humberto: {
+    tipo: "persona",
+    nombre: "Humberto",
+    detalle: "20 años · Capitán del equipo de robótica Bcats",
+    foto: "",
+    critico: "",
+    tipoSangre: "N/A",
+    alergias: "N/A",
+    telefonos: [
+      { etiqueta: "Ing. Sergio Guardado", numero: "8711044146" }
+    ],
+    direccion: "Edificio 34F, Instituto Tecnológico de la Laguna",
+    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
 };
 function render(){
@@ -41,7 +55,7 @@ function render(){
   }
   const fotoHtml = p.foto
     ? `<img src="${p.foto}" alt="${p.nombre}">`
-    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : '🧒'}</div>`;
+    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
   const telefonosHtml = p.telefonos.map(t => `
     <div class="field">
       <span class="k">${t.etiqueta}</span>
