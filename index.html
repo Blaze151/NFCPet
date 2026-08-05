@@ -7,10 +7,13 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card" id="card"></div>
+
+<div class="card" id="card"></div>
+
 <script>
 // ── Base de datos: edita/agrega perfiles aquí ──
 const PERFILES = {
+
   abi: {
     tipo: "mascota",
     nombre: "Abi",
@@ -26,6 +29,7 @@ const PERFILES = {
     direccion: "Aula 34G, Instituto Tecnológico de la Laguna",
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   },
+
   humberto: {
     tipo: "persona",
     nombre: "Humberto",
@@ -39,31 +43,65 @@ const PERFILES = {
     ],
     direccion: "Edificio 34F, Instituto Tecnológico de la Laguna",
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+  },
+
+  sergio: {
+    tipo: "persona",
+    nombre: "Sergio Alejandro Guardado Martínez",
+    detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
+    foto: "",
+    critico: "",
+    tipoSangre: "A+",
+    alergias: "No especificadas",
+    correo: "sergioteclaguna@gmail.com",
+    ocupacion: "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
+    estudios: [
+      "Ingeniero en Electrónica",
+      "Maestría en Educación",
+      "Maestría en Ciencias en Ingeniería Eléctrica"
+    ],
+    hobbies: "🏍️ Motociclista",
+    identidad: "🕷️ Spider-Man",
+    telefonos: [
+      { etiqueta: "Sergio Alejandro Guardado Martínez", numero: "8711044146" },
+      { etiqueta: "Adriana Puentes (Emergencia)", numero: "8713962060" }
+    ],
+    direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
+    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
+
 };
+
 function render(){
+
   const id = location.hash.slice(1).toLowerCase();
   const p = PERFILES[id];
   const card = document.getElementById('card');
+
   if(!p){
     card.innerHTML = `
       <div class="empty">
         <p>Esta ficha no está activa todavía.</p>
-        <p>Verifica el enlace, por ejemplo:<br><code>${location.origin}${location.pathname}#abi</code></p>
+        <p>Verifica el enlace, por ejemplo:<br>
+        <code>${location.origin}${location.pathname}#abi</code></p>
       </div>`;
     return;
   }
+
   const fotoHtml = p.foto
     ? `<img src="${p.foto}" alt="${p.nombre}">`
     : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
+
   const telefonosHtml = p.telefonos.map(t => `
     <div class="field">
       <span class="k">${t.etiqueta}</span>
       <a class="v" href="tel:${t.numero}">${t.numero}</a>
     </div>`).join('');
+
   const direccionHtml = p.mapsUrl
     ? `<a class="v" href="${p.mapsUrl}" target="_blank" rel="noopener">${p.direccion}</a>`
     : `<span class="v">${p.direccion}</span>`;
+
   card.innerHTML = `
     <div class="band">
       <p class="eyebrow">${p.tipo === 'mascota' ? 'Ficha de mascota' : 'Ficha de emergencia'}</p>
@@ -71,26 +109,78 @@ function render(){
       <p class="sub">${p.detalle}</p>
       <div class="photo-wrap">${fotoHtml}</div>
     </div>
+
     <div class="body">
+
       ${p.critico ? `
       <div class="critical">
         <span class="dot"></span>
         <div><strong>Importante</strong><span>${p.critico}</span></div>
       </div>` : ''}
-      <div class="field"><span class="k">Tipo de sangre</span><span class="v">${p.tipoSangre}</span></div>
-      <div class="field"><span class="k">Alergias</span><span class="v">${p.alergias}</span></div>
-      <div class="field"><span class="k">Dirección</span>${direccionHtml}</div>
+
+      <div class="field">
+        <span class="k">Tipo de sangre</span>
+        <span class="v">${p.tipoSangre}</span>
+      </div>
+
+      <div class="field">
+        <span class="k">Alergias</span>
+        <span class="v">${p.alergias}</span>
+      </div>
+
+      ${p.correo ? `
+      <div class="field">
+        <span class="k">Correo</span>
+        <a class="v" href="mailto:${p.correo}">${p.correo}</a>
+      </div>` : ''}
+
+      ${p.ocupacion ? `
+      <div class="field">
+        <span class="k">Ocupación</span>
+        <span class="v">${p.ocupacion}</span>
+      </div>` : ''}
+
+      ${p.estudios ? `
+      <div class="field">
+        <span class="k">Estudios</span>
+        <span class="v">${p.estudios.join('<br>')}</span>
+      </div>` : ''}
+
+      ${p.hobbies ? `
+      <div class="field">
+        <span class="k">Hobbies</span>
+        <span class="v">${p.hobbies}</span>
+      </div>` : ''}
+
+      ${p.identidad ? `
+      <div class="field">
+        <span class="k">Identidad secreta</span>
+        <span class="v">${p.identidad}</span>
+      </div>` : ''}
+
+      <div class="field">
+        <span class="k">Dirección</span>
+        ${direccionHtml}
+      </div>
+
       <p class="section-label">Contactos</p>
+
       ${telefonosHtml}
+
       <div class="actions">
         <a class="btn primary" href="tel:${p.telefonos[0].numero}">Llamar</a>
         ${p.mapsUrl ? `<a class="btn secondary" href="${p.mapsUrl}" target="_blank" rel="noopener">Ver mapa</a>` : ''}
       </div>
+
       <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
+
     </div>`;
 }
+
 window.addEventListener('hashchange', render);
 render();
+
 </script>
+
 </body>
 </html>
