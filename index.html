@@ -89,8 +89,8 @@ function render(){
   }
 
   const fotoHtml = p.foto
-    ? `<img src="${p.foto}" alt="${p.nombre}">`
-    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
+  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto('${p.foto}')" loading="lazy">`
+  : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
 
   const telefonosHtml = p.telefonos.map(t => `
     <div class="field">
@@ -176,7 +176,27 @@ function render(){
 
     </div>`;
 }
+function abrirFoto(src){
 
+  // Evita abrir dos visores
+  if(document.querySelector(".visor-foto")) return;
+
+  const visor = document.createElement("div");
+  visor.className = "visor-foto";
+
+  visor.innerHTML = `
+      <span class="cerrar">&times;</span>
+      <img src="${src}" alt="Foto">
+  `;
+
+  visor.onclick = function(e){
+      if(e.target === visor || e.target.classList.contains("cerrar")){
+          visor.remove();
+      }
+  };
+
+  document.body.appendChild(visor);
+}
 window.addEventListener('hashchange', render);
 render();
 
