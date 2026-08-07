@@ -8,6 +8,11 @@
 <style>
 /* ── Estilos para la función especial de Sergio (mantén aquí o muévelos a style.css) ── */
 .photo-wrap { position: relative; }
+.photo-wrap img {
+  -webkit-touch-callout: none; /* evita el menú de "Guardar imagen/Buscar con Google Lens" en iOS */
+  -webkit-user-select: none;
+  user-select: none;
+}
 
 .photo-wrap.holding::after {
   content: "";
@@ -15,7 +20,7 @@
   border-radius: 50%;
   border: 4px solid rgba(196,0,0,.15);
   border-top-color: #c40000;
-  animation: holdSpin 10s linear forwards;
+  animation: holdSpin 5s linear forwards;
   pointer-events: none;
 }
 @keyframes holdSpin {
@@ -23,13 +28,12 @@
 }
 
 .spidey-overlay {
-  position: absolute; inset: 0;
+  position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 50%;
   background: radial-gradient(circle, rgba(196,0,0,.9), rgba(0,51,160,.9));
   animation: spideyPulse 1.4s ease forwards;
   overflow: hidden;
-  z-index: 5;
+  z-index: 9999;
 }
 .spidey-overlay::before {
   content: "";
@@ -38,7 +42,7 @@
   animation: spideyWeb 1.2s ease-out forwards;
 }
 .spidey-emoji {
-  font-size: 2.6rem;
+  font-size: 6rem;
   z-index: 1;
   animation: spideyPop 1.4s ease forwards;
 }
@@ -139,7 +143,7 @@ const PERFILES = {
 };
 
 let holdTimer = null;
-const HOLD_DURATION = 10000; // 10 segundos
+const HOLD_DURATION = 5000; // 5 segundos
 
 function render(){
 
@@ -158,7 +162,7 @@ function render(){
   }
 
   const fotoHtml = p.foto
-  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy">`
+  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy" draggable="false" oncontextmenu="return false;">`
   : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
 
   const telefonosHtml = p.telefonos.map(t => `
@@ -270,6 +274,7 @@ function attachHoldReveal(p){
   wrap.addEventListener('touchstart', start, { passive: true });
   wrap.addEventListener('touchend', cancel);
   wrap.addEventListener('touchcancel', cancel);
+  wrap.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
 function triggerSpideyReveal(p, wrap){
@@ -278,7 +283,7 @@ function triggerSpideyReveal(p, wrap){
   const overlay = document.createElement('div');
   overlay.className = 'spidey-overlay';
   overlay.innerHTML = '<span class="spidey-emoji">🕷️</span>';
-  wrap.appendChild(overlay);
+  document.body.appendChild(overlay);
 
   setTimeout(() => {
     const img = wrap.querySelector('img');
