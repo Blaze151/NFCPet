@@ -5,6 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Ficha de emergencia</title>
 <link rel="stylesheet" href="style.css">
+<style>
+/* ── Estilos para la función especial de Sergio (mantén aquí o muévelos a style.css) ── */
+.photo-wrap { position: relative; }
+
+.photo-wrap.holding::after {
+  content: "";
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  border: 4px solid rgba(196,0,0,.15);
+  border-top-color: #c40000;
+  animation: holdSpin 10s linear forwards;
+  pointer-events: none;
+}
+@keyframes holdSpin {
+  to { transform: rotate(360deg); border-top-color: #0033a0; }
+}
+
+.spidey-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,0,0,.9), rgba(0,51,160,.9));
+  animation: spideyPulse 1.4s ease forwards;
+  overflow: hidden;
+  z-index: 5;
+}
+.spidey-overlay::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.35) 0deg 2deg, transparent 2deg 20deg);
+  animation: spideyWeb 1.2s ease-out forwards;
+}
+.spidey-emoji {
+  font-size: 2.6rem;
+  z-index: 1;
+  animation: spideyPop 1.4s ease forwards;
+}
+@keyframes spideyPulse {
+  0%   { opacity: 0; transform: scale(.6); }
+  20%  { opacity: 1; transform: scale(1.1); }
+  60%  { transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+@keyframes spideyWeb {
+  0%   { transform: scale(0) rotate(0deg); opacity: .9; }
+  100% { transform: scale(2) rotate(180deg); opacity: 0; }
+}
+@keyframes spideyPop {
+  0%, 60% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  75%     { transform: scale(1.4) rotate(10deg); opacity: 1; }
+  100%    { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.field.oculto { display: none; }
+.field.oculto.mostrar {
+  display: flex;
+  animation: fadeInField .6s ease;
+}
+@keyframes fadeInField {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
 
@@ -50,6 +113,9 @@ const PERFILES = {
     nombre: "Sergio Alejandro Guardado Martínez",
     detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
     foto: "1.img/sergio.jpg",
+    // ── Función especial: mantener presionada la foto 10s ──
+    holdReveal: true,
+    fotoSecreta: "1.img/sergio-spiderman.jpg",
     critico: "",
     tipoSangre: "A+",
     alergias: "No especificadas",
@@ -72,6 +138,9 @@ const PERFILES = {
 
 };
 
+let holdTimer = null;
+const HOLD_DURATION = 10000; // 10 segundos
+
 function render(){
 
   const id = location.hash.slice(1).toLowerCase();
@@ -89,7 +158,7 @@ function render(){
   }
 
   const fotoHtml = p.foto
-  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto('${p.foto}')" loading="lazy">`
+  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy">`
   : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
 
   const telefonosHtml = p.telefonos.map(t => `
@@ -153,7 +222,7 @@ function render(){
       </div>` : ''}
 
       ${p.identidad ? `
-      <div class="field">
+      <div class="field oculto" id="campo-identidad">
         <span class="k">Identidad secreta</span>
         <span class="v">${p.identidad}</span>
       </div>` : ''}
@@ -175,9 +244,53 @@ function render(){
       <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
 
     </div>`;
-}
-function abrirFoto(src){
 
+  attachHoldReveal(p);
+}
+
+// ── Mantener presionada la foto 10s para revelar identidad secreta ──
+function attachHoldReveal(p){
+  if(!p.holdReveal || !p.fotoSecreta) return;
+
+  const wrap = document.querySelector('.photo-wrap');
+  if(!wrap) return;
+
+  const start = () => {
+    wrap.classList.add('holding');
+    holdTimer = setTimeout(() => triggerSpideyReveal(p, wrap), HOLD_DURATION);
+  };
+  const cancel = () => {
+    wrap.classList.remove('holding');
+    clearTimeout(holdTimer);
+  };
+
+  wrap.addEventListener('mousedown', start);
+  wrap.addEventListener('mouseup', cancel);
+  wrap.addEventListener('mouseleave', cancel);
+  wrap.addEventListener('touchstart', start, { passive: true });
+  wrap.addEventListener('touchend', cancel);
+  wrap.addEventListener('touchcancel', cancel);
+}
+
+function triggerSpideyReveal(p, wrap){
+  wrap.classList.remove('holding');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'spidey-overlay';
+  overlay.innerHTML = '<span class="spidey-emoji">🕷️</span>';
+  wrap.appendChild(overlay);
+
+  setTimeout(() => {
+    const img = wrap.querySelector('img');
+    if(img) img.src = p.fotoSecreta;
+    overlay.remove();
+
+    const campo = document.getElementById('campo-identidad');
+    if(campo) campo.classList.add('mostrar');
+  }, 1400);
+}
+
+function abrirFoto(src){
   // Evita abrir dos visores
   if(document.querySelector(".visor-foto")) return;
 
@@ -197,6 +310,7 @@ function abrirFoto(src){
 
   document.body.appendChild(visor);
 }
+
 window.addEventListener('hashchange', render);
 render();
 
