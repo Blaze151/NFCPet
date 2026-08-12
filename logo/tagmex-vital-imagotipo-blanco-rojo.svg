@@ -1,0 +1,14 @@
+<svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(10,-5) scale(0.85)">
+    <path d="M70,30 H150 A20,20 0 0 1 170,50 V150 L110,205 L50,150 V50 A20,20 0 0 1 70,30 Z" fill="#E3122E"/>
+    <circle cx="90" cy="68" r="13" fill="#FFFFFF"/>
+    <polyline points="60,145 82,145 94,113 108,168 122,130 134,145 160,145" stroke="#FFFFFF" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M182,38 A14,14 0 0 1 198,54" stroke="#E3122E" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M172,22 A30,30 0 0 1 214,64" stroke="#E3122E" stroke-width="7" fill="none" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(230,40)">
+    <text x="0" y="55" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="54" letter-spacing="1" fill="#E3122E">TAGMEX</text>
+    <rect x="2" y="66" width="300" height="4" fill="#E3122E"/>
+    <text x="2" y="98" font-family="Arial, Helvetica, sans-serif" font-weight="500" font-size="22" letter-spacing="8" fill="#FFFFFF">VITAL</text>
+  </g>
+</svg>
