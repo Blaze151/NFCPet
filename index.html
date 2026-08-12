@@ -340,12 +340,32 @@ function triggerSpideyReveal(p, wrap){
 
 function abrirFoto(src){
   if(document.querySelector('.visor-foto')) return;
+
   const visor = document.createElement('div');
   visor.className = 'visor-foto';
-  visor.innerHTML = `<span class="cerrar">&times;</span><img src="${src}" alt="Foto">`;
-  visor.onclick = function(e){
-    if(e.target === visor || e.target.classList.contains('cerrar')) visor.remove();
+  visor.setAttribute('role', 'dialog');
+  visor.setAttribute('aria-modal', 'true');
+  visor.innerHTML = `
+    <button class="cerrar" type="button" aria-label="Cerrar foto">&times;</button>
+    <img src="${src}" alt="Foto ampliada">
+  `;
+
+  const cerrarVisor = () => {
+    document.removeEventListener('keydown', manejarTecla);
+    visor.remove();
   };
+
+  const manejarTecla = (e) => {
+    if(e.key === 'Escape') cerrarVisor();
+  };
+
+  visor.addEventListener('click', (e) => {
+    if(e.target === visor || e.target.classList.contains('cerrar')) {
+      cerrarVisor();
+    }
+  });
+
+  document.addEventListener('keydown', manejarTecla);
   document.body.appendChild(visor);
 }
 
