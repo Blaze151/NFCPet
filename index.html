@@ -40,9 +40,14 @@
 
   <div class="card" id="card"></div>
 
- <div class="brand-footer">
-  <img src="logo/tagmex-vital-logotipo-negro-rojo.svg" alt="Tagmex Vital" class="brand-footer-logo">
-</div>
+  <div class="brand-footer">
+    <img
+      id="footer-logo"
+      src="logo/tagmex-vital-logotipo-negro-rojo.svg"
+      alt="Tagmex Vital"
+      class="brand-footer-logo"
+    >
+  </div>
 
 </div>
 
@@ -277,8 +282,8 @@ function render(){
   // FOTO
   // ---------------------------------------------
 
- const fotoHtml = p.foto
-  ? `<img src="${p.foto}" alt="${p.nombre}" loading="lazy" draggable="false" oncontextmenu="return false;">`
+  const fotoHtml = p.foto
+    ? `<img src="${p.foto}" alt="${p.nombre}" loading="lazy" draggable="false" oncontextmenu="return false;">`
 
     : `
       <div class="ph-fallback">
@@ -798,11 +803,7 @@ function render(){
         </div>
 
 
-        <!-- ==========================================
-             IDENTIDAD SECRETA
-             IMPORTANTE:
-             Empieza completamente oculta.
-             ========================================== -->
+        <!-- IDENTIDAD SECRETA -->
 
         ${p.identidad ? `
 
@@ -995,10 +996,13 @@ function emergencyCall(){
 // =====================================================
 
 function attachHoldReveal(p){
+
   const wrap = document.querySelector('.photo-wrap');
+
   if(!wrap) return;
 
   const img = wrap.querySelector('img');
+
   if(!img) return;
 
   let holdTimer = null;
@@ -1008,7 +1012,9 @@ function attachHoldReveal(p){
   const HOLD_DURATION = 5000;
 
   function iniciar(e){
+
     startTime = Date.now();
+
     longPressActivated = false;
 
     wrap.classList.add('holding');
@@ -1016,43 +1022,98 @@ function attachHoldReveal(p){
     clearTimeout(holdTimer);
 
     holdTimer = setTimeout(() => {
+
       longPressActivated = true;
+
       triggerSpideyReveal(p, wrap);
+
     }, HOLD_DURATION);
+
   }
+
 
   function terminar(e){
+
     clearTimeout(holdTimer);
+
     wrap.classList.remove('holding');
 
-    const tiempoPresionado = Date.now() - startTime;
+    const tiempoPresionado =
+      Date.now() - startTime;
+
 
     // Si fue un toque corto, abrir la foto
-    if(!longPressActivated && tiempoPresionado < HOLD_DURATION){
+    if(
+      !longPressActivated &&
+      tiempoPresionado < HOLD_DURATION
+    ){
+
       abrirFoto(img.src);
+
     }
+
   }
+
 
   function cancelar(){
+
     clearTimeout(holdTimer);
+
     wrap.classList.remove('holding');
+
   }
 
+
   // PC
-  wrap.addEventListener('mousedown', iniciar);
-  wrap.addEventListener('mouseup', terminar);
-  wrap.addEventListener('mouseleave', cancelar);
+
+  wrap.addEventListener(
+    'mousedown',
+    iniciar
+  );
+
+  wrap.addEventListener(
+    'mouseup',
+    terminar
+  );
+
+  wrap.addEventListener(
+    'mouseleave',
+    cancelar
+  );
+
 
   // CELULAR / TABLET
-  wrap.addEventListener('touchstart', iniciar, {passive:true});
-  wrap.addEventListener('touchend', terminar, {passive:true});
-  wrap.addEventListener('touchcancel', cancelar, {passive:true});
+
+  wrap.addEventListener(
+    'touchstart',
+    iniciar,
+    {passive:true}
+  );
+
+  wrap.addEventListener(
+    'touchend',
+    terminar,
+    {passive:true}
+  );
+
+  wrap.addEventListener(
+    'touchcancel',
+    cancelar,
+    {passive:true}
+  );
+
 
   // Evitar menú contextual
-  wrap.addEventListener('contextmenu', e => {
-    e.preventDefault();
-  });
+
+  wrap.addEventListener(
+    'contextmenu',
+    e => {
+      e.preventDefault();
+    }
+  );
+
 }
+
 
 // =====================================================
 // REVELAR SPIDER-MAN
@@ -1084,6 +1145,7 @@ function triggerSpideyReveal(p, wrap){
   setTimeout(() => {
 
     // Cambiar fotografía
+
     const img =
       wrap.querySelector('img');
 
@@ -1094,8 +1156,11 @@ function triggerSpideyReveal(p, wrap){
         p.fotoSecreta;
 
       // La nueva foto también puede abrirse
+
       img.onclick = () => {
+
         abrirFoto(img.src);
+
       };
 
     }
@@ -1106,7 +1171,9 @@ function triggerSpideyReveal(p, wrap){
     // ---------------------------------------------
 
     const campo =
-      document.getElementById('campo-identidad');
+      document.getElementById(
+        'campo-identidad'
+      );
 
 
     if(campo){
@@ -1130,7 +1197,9 @@ function triggerSpideyReveal(p, wrap){
 function abrirFoto(src){
 
   if(document.querySelector('.visor-foto')){
+
     return;
+
   }
 
 
@@ -1242,12 +1311,60 @@ render();
 // =====================================================
 
 function updateToggleIcon(){
-  const btn = document.getElementById('theme-toggle');
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  if(btn) btn.textContent = isLight ? '🌙' : '☀️';
-}
+
+  const btn =
+    document.getElementById(
+      'theme-toggle'
+    );
+
+  const isLight =
+    document.documentElement.getAttribute(
+      'data-theme'
+    ) === 'light';
+
+
+  if(btn){
+
+    btn.textContent =
+      isLight ? '🌙' : '☀️';
+
+  }
+
 }
 
+
+// =====================================================
+// LOGOTIPO DEL PIE
+// =====================================================
+
+function updateFooterLogo(){
+
+  const footerLogo =
+    document.getElementById(
+      'footer-logo'
+    );
+
+
+  if(!footerLogo) return;
+
+
+  const isLight =
+    document.documentElement.getAttribute(
+      'data-theme'
+    ) === 'light';
+
+
+  footerLogo.src =
+    isLight
+      ? 'logo/tagmex-vital-logotipo-negro-rojo.svg'
+      : 'logo/tagmex-vital-logotipo-blanco-rojo.svg';
+
+}
+
+
+// =====================================================
+// CAMBIO DE TEMA
+// =====================================================
 
 document
   .getElementById('theme-toggle')
@@ -1260,7 +1377,9 @@ document
 
 
       const isLight =
-        root.getAttribute('data-theme') === 'light';
+        root.getAttribute(
+          'data-theme'
+        ) === 'light';
 
 
       if(isLight){
@@ -1291,11 +1410,15 @@ document
 
       updateToggleIcon();
 
+      updateFooterLogo();
+
     }
   );
 
 
 updateToggleIcon();
+
+updateFooterLogo();
 
 
 // =====================================================
@@ -1310,7 +1433,9 @@ window.addEventListener(
       function(){
 
         const splash =
-          document.getElementById('splash');
+          document.getElementById(
+            'splash'
+          );
 
 
         if(splash){
