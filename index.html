@@ -40,13 +40,8 @@
 
   <div class="card" id="card"></div>
 
-  <div class="brand-footer">
-  <img 
-    id="footer-logo"
-    src="logo/tagmex-vital-logotipo-negro-rojo.svg"
-    alt="Tagmex Vital"
-    class="brand-footer-logo"
-  >
+ <div class="brand-footer">
+  <img src="logo/tagmex-vital-logotipo-negro-rojo.svg" alt="Tagmex Vital" class="brand-footer-logo">
 </div>
 
 </div>
@@ -1248,18 +1243,8 @@ render();
 
 function updateToggleIcon(){
   const btn = document.getElementById('theme-toggle');
-  const footerLogo = document.getElementById('footer-logo');
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-
-  if(btn){
-    btn.textContent = isLight ? '🌙' : '☀️';
-  }
-
-  if(footerLogo){
-    footerLogo.src = isLight
-      ? 'logo/tagmex-vital-logotipo-negro-rojo.svg'
-      : 'logo/tagmex-vital-logotipo-blanco-rojo.svg';
-  }
+  if(btn) btn.textContent = isLight ? '🌙' : '☀️';
 }
 }
 
