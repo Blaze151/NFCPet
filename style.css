@@ -1,259 +1,382 @@
-:root{
-  --red:#e3122e;
-  --red-dim:#ff3b52;
-  --band-bg:#141414;
-  --ink:#141414;
-  --paper:#f4f4f4;
-  --card-bg:#ffffff;
-  --line:#e6e6e6;
-  --signal:#e3122e;
-  --alert:#c4441f;
-  --muted:#6b6b6b;
-  --critical-bg:#fbeeea;
-  --critical-border:#f0d3c8;
-  --btn-secondary-bg:#eef0f1;
-  --photo-bg:#eceeef;
-}
-[data-theme="dark"]{
-  --ink:#f2f2f2;
-  --paper:#0c0c0c;
-  --card-bg:#161616;
-  --line:#2a2a2a;
-  --signal:#ff3b52;
-  --alert:#ff6b45;
-  --muted:#9a9a9a;
-  --critical-bg:#2a1410;
-  --critical-border:#4a201a;
-  --btn-secondary-bg:#232323;
-  --photo-bg:#232323;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:var(--paper);
-  color:var(--ink);
-  min-height:100vh;
-  transition:background .3s ease,color .3s ease;
-}
-.page{
-  max-width:440px;
-  margin:0 auto;
-  min-height:100vh;
-  background:var(--card-bg);
-  border-left:1px solid var(--line);
-  border-right:1px solid var(--line);
-  display:flex;
-  flex-direction:column;
-  transition:background .3s ease,border-color .3s ease;
-}
-.card{
-  flex:1 0 auto;
-  width:100%;
-}
-.band{
-  background:var(--band-bg);
-  color:#fff;
-  padding:24px 24px 60px;
-  position:relative;
-  border-bottom:3px solid var(--red);
-}
-.band .eyebrow{
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--red-dim);
-  opacity:1;
-  font-weight:700;
-  margin:0 0 6px;
-}
-.band h1{
-  margin:0;
-  font-size:27px;
-  font-weight:800;
-  letter-spacing:-0.01em;
-}
-.band .sub{
-  margin:4px 0 0;
-  font-size:14px;
-  opacity:.75;
-}
-.photo-wrap{
-  position:absolute;
-  left:24px;
-  bottom:-45px;
-  width:100px;
-  height:100px;
-  border-radius:20px;
-  overflow:hidden;
-  border:3px solid var(--red);
-  background:var(--photo-bg);
-  box-shadow:0 3px 10px rgba(0,0,0,.22);
-}
-.photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
-.photo-wrap .ph-fallback{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  font-size:28px;color:var(--muted);
-  background:var(--photo-bg);
-}
-.body{
-    padding:70px 24px 40px;
-}
-.critical{
-  display:flex;
-  gap:12px;
-  padding:14px 16px;
-  background:var(--critical-bg);
-  border:1px solid var(--critical-border);
-  border-radius:10px;
-  margin-bottom:18px;
-}
-.critical .dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--alert);
-  margin-top:6px;flex-shrink:0;
-}
-.critical strong{display:block;font-size:13px;color:var(--alert);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
-.critical span{font-size:15px;line-height:1.4;}
-.section-label{
-  font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
-  margin:22px 0 8px;
-}
-.field{
-  padding:13px 0;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  gap:16px;
-  align-items:baseline;
-}
-.field .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;}
-.field .v{font-size:15px;text-align:right;font-weight:500;}
-.field a.v{color:var(--signal);text-decoration:none;}
-.actions{display:flex;gap:10px;margin-top:24px;}
-.btn{
-  flex:1;
-  display:block;
-  text-align:center;
-  text-decoration:none;
-  padding:15px;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:600;
-}
-.btn.primary{background:var(--signal);color:#fff;}
-.btn.secondary{background:var(--btn-secondary-bg);color:var(--ink);}
-.btn:active{opacity:.85;}
-.foot{
-  margin-top:28px;
-  font-size:12px;
-  color:var(--muted);
-  text-align:center;
-}
-.empty{padding:60px 28px;text-align:center;color:var(--muted);}
-.empty code{background:var(--btn-secondary-bg);padding:2px 6px;border-radius:4px;}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Ficha de emergencia</title>
+<link rel="icon" type="image/svg+xml" href="logo/tagmex-vital-isotipo-negro-rojo.svg">
+<link rel="stylesheet" href="style.css">
+<script>
+(function(){
+  try{
+    if(localStorage.getItem('tagmex-theme') === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    }
+  }catch(e){}
+})();
+</script>
+</head>
+<body>
 
-/* ---------- Pie de marca (logotipo) ---------- */
-.brand-footer{
-  padding:22px 24px 34px;
-  text-align:center;
-  border-top:1px solid var(--line);
-  background:var(--card-bg);
-}
-.brand-footer-logo{
-  height:42px;
-  opacity:.85;
+<div id="splash" class="splash">
+  <img src="logo/tagmex-vital-imagotipo-blanco-rojo.svg" alt="Tagmex Vital" class="splash-logo">
+</div>
+
+<button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar tema">☀️</button>
+
+<div class="page">
+  <div class="card" id="card"></div>
+  <div class="brand-footer">
+    <img src="logo/tagmex-vital-logotipo-negro-rojo.svg" alt="Tagmex Vital" class="brand-footer-logo">
+  </div>
+</div>
+
+<script>
+// ── Base de datos: agrega o modifica perfiles aquí ──
+const PERFILES = {
+  abi: {
+    tipo: "mascota",
+    nombre: "Abi",
+    detalle: "Gata · Equipo de robótica Bcats",
+    foto: "",
+    critico: "",
+    tipoSangre: "N/A",
+    alergias: "N/A",
+    condicionMedica: "N/A",
+    telefonos: [
+      { etiqueta: "Humberto Morales Carrillo", numero: "8713588027" },
+      { etiqueta: "Daniel Hernández Bajini", numero: "8716044220" }
+    ],
+    direccion: "Aula 34G, Instituto Tecnológico de la Laguna",
+    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+  },
+
+  humberto: {
+    tipo: "persona",
+    nombre: "Humberto",
+    detalle: "20 años · Capitán del equipo de robótica Bcats",
+    foto: "",
+    critico: "",
+    tipoSangre: "B+",
+    alergias: "A los pendejos",
+    condicionMedica: "N/A",
+    correo: "",
+    ocupacion: "Estudiante de Ingeniería Electrónica",
+    telefonos: [
+      { etiqueta: "Ing. Sergio Guardado", numero: "8711044146" }
+    ],
+    direccion: "Edificio 34F, Instituto Tecnológico de la Laguna",
+    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+  },
+
+  sergio: {
+    tipo: "persona",
+    nombre: "Sergio Alejandro Guardado Martínez",
+    detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
+    foto: "1.img/sergio.jpg",
+    holdReveal: true,
+    fotoSecreta: "1.img/sergio-spiderman.jpg",
+    critico: "",
+    tipoSangre: "A+",
+    alergias: "No especificadas",
+    condicionMedica: "N/A",
+    correo: "sergioteclaguna@gmail.com",
+    ocupacion: "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
+    estudios: [
+      "Ingeniero en Electrónica",
+      "Maestría en Educación",
+      "Maestría en Ciencias en Ingeniería Eléctrica"
+    ],
+    hobbies: "🏍️ Motociclista",
+    identidad: "🕷️ Spider-Man",
+    telefonos: [
+      { etiqueta: "Sergio Alejandro", numero: "8711044146" },
+      { etiqueta: "Adriana Puentes (Emergencia)", numero: "8713962060" }
+    ],
+    direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
+    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+  }
+};
+
+let holdTimer = null;
+const HOLD_DURATION = 5000;
+
+function hasValue(value){
+  if(value === undefined || value === null) return false;
+  const text = String(value).trim().toLowerCase();
+  return text !== '' && text !== 'n/a' && text !== 'no especificadas' && text !== 'no especificado';
 }
 
-/* ---------- Botón de modo oscuro ---------- */
-.theme-toggle{
-  position:fixed;
-  top:16px;
-  right:16px;
-  z-index:500;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:none;
-  background:rgba(20,20,20,.55);
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
-  color:#fff;
-  font-size:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  box-shadow:0 2px 10px rgba(0,0,0,.25);
-}
-.theme-toggle:active{opacity:.8;}
-
-/* ---------- Splash de bienvenida (imagotipo) ---------- */
-.splash{
-  position:fixed;
-  inset:0;
-  background:var(--band-bg);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:100000;
-  transition:opacity .6s ease;
-}
-.splash-logo{
-  width:72%;
-  max-width:300px;
-  animation:splashPop .7s ease;
-}
-.splash.splash-hide{
-  opacity:0;
-  pointer-events:none;
-}
-@keyframes splashPop{
-  from{opacity:0; transform:scale(.9);}
-  to{opacity:1; transform:scale(1);}
-}
-/* ---------- Foto clicable ---------- */
-
-.photo-wrap img{
-    cursor:pointer;
-    transition:transform .25s ease;
+function icon(type){
+  const icons = {
+    medical:'♥',
+    allergy:'⚠',
+    contact:'♧',
+    personal:'●',
+    mail:'✉',
+    calendar:'▣',
+    location:'⌖',
+    work:'▤',
+    studies:'▥',
+    hobby:'★'
+  };
+  return icons[type] || '•';
 }
 
-.photo-wrap img:hover{
-    transform:scale(1.05);
+function render(){
+  const id = location.hash.slice(1).toLowerCase();
+  const p = PERFILES[id];
+  const card = document.getElementById('card');
+
+  if(!p){
+    card.innerHTML = `
+      <div class="body">
+        <div class="section-card">
+          <div class="empty">
+            <p>Esta ficha no está activa todavía.</p>
+            <p>Verifica el enlace, por ejemplo:<br><code>${location.origin}${location.pathname}#abi</code></p>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const fotoHtml = p.foto
+    ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy" draggable="false" oncontextmenu="return false;">`
+    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
+
+  const allergyTag = hasValue(p.alergias)
+    ? `<div class="alert-tag"><span class="tag-icon">⚠</span><span><strong>Alergia:</strong> ${p.alergias}</span></div>` : '';
+  const conditionTag = hasValue(p.condicionMedica)
+    ? `<div class="alert-tag"><span class="tag-icon">♥</span><span><strong>Condición:</strong> ${p.condicionMedica}</span></div>` : '';
+
+  const medicalTags = allergyTag || conditionTag
+    ? `<div class="alert-tags">${allergyTag}${conditionTag}</div>` : '';
+
+  const telefonosHtml = (p.telefonos || []).map(t => `
+    <div class="contact-row">
+      <div class="contact-main">
+        <div class="contact-name">${t.etiqueta}</div>
+        <span class="contact-phone">${t.numero}</span>
+      </div>
+      <a class="call-circle" href="tel:${t.numero}" aria-label="Llamar a ${t.etiqueta}">☎</a>
+    </div>`).join('');
+
+  const direccionHtml = p.mapsUrl
+    ? `<a class="v" href="${p.mapsUrl}" target="_blank" rel="noopener">${p.direccion}</a>`
+    : `<span class="v">${p.direccion}</span>`;
+
+  card.innerHTML = `
+    <div class="topbar">
+      <div class="topbar-brand">
+        <img src="logo/tagmex-vital-isotipo-blanco-rojo.svg" alt="Tagmex Vital" class="topbar-logo">
+        <span class="topbar-title">Ficha de emergencia</span>
+      </div>
+      <div class="nfc-badge"><span class="nfc-icon">◉</span> NFC</div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-photo-wrap">
+        <div class="photo-wrap">${fotoHtml}</div>
+        <div class="medical-plus">+</div>
+      </div>
+      <h1>${p.nombre}</h1>
+      <p class="sub">${p.detalle}</p>
+
+      <div class="medical-summary">
+        <div class="blood-card">
+          <span class="blood-value">${p.tipoSangre || 'N/A'}</span>
+          <span class="blood-label">Tipo de sangre</span>
+        </div>
+        ${medicalTags}
+      </div>
+    </section>
+
+    <div class="body">
+      ${p.critico ? `
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">⚠</span> Importante</div>
+        <div class="field"><span class="v" style="text-align:left;width:100%;">${p.critico}</span></div>
+      </div>` : ''}
+
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">♥</span> Información médica</div>
+        ${hasValue(p.alergias) ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">⚠</span>Alergias</span>
+          <span class="v">${p.alergias}</span>
+        </div>` : ''}
+        ${hasValue(p.condicionMedica) ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">♥</span>Condiciones médicas</span>
+          <span class="v">${p.condicionMedica}</span>
+        </div>` : ''}
+        <div class="field">
+          <span class="k"><span class="field-icon">●</span>Tipo de sangre</span>
+          <span class="v">${p.tipoSangre || 'N/A'}</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">♧</span> Contacto de emergencia</div>
+        ${telefonosHtml || '<div class="field"><span class="v" style="text-align:left;width:100%;">Sin contactos registrados.</span></div>'}
+      </div>
+
+      <div class="section-card" id="informacion-personal">
+        <div class="section-heading"><span class="heading-icon">●</span> Información personal</div>
+        ${p.correo ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">✉</span>Correo</span>
+          <a class="v" href="mailto:${p.correo}">${p.correo}</a>
+        </div>` : ''}
+        ${p.fechaNacimiento ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">▣</span>Fecha de nacimiento</span>
+          <span class="v">${p.fechaNacimiento}</span>
+        </div>` : ''}
+        ${p.ocupacion ? `
+        <div class="field long">
+          <span class="k"><span class="field-icon">▤</span>Ocupación</span>
+          <span class="v">${p.ocupacion}</span>
+        </div>` : ''}
+        ${p.estudios ? `
+        <div class="field long">
+          <span class="k"><span class="field-icon">▥</span>Estudios</span>
+          <span class="v">${p.estudios.join('<br>')}</span>
+        </div>` : ''}
+        ${p.hobbies ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">★</span>Hobbies</span>
+          <span class="v">${p.hobbies}</span>
+        </div>` : ''}
+        <div class="field long">
+          <span class="k"><span class="field-icon">⌖</span>Dirección</span>
+          ${direccionHtml}
+        </div>
+        ${p.identidad ? `
+        <div class="field oculto" id="campo-identidad">
+          <span class="k"><span class="field-icon">★</span>Identidad secreta</span>
+          <span class="v">${p.identidad}</span>
+        </div>` : ''}
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="tel:${p.telefonos && p.telefonos[0] ? p.telefonos[0].numero : ''}">
+          <span class="btn-icon">☎</span><span>Llamar</span>
+        </a>
+        ${p.mapsUrl ? `<a class="btn secondary" href="${p.mapsUrl}" target="_blank" rel="noopener"><span class="btn-icon">⌖</span><span>Ver mapa</span></a>` : ''}
+        <button class="btn" type="button" onclick="document.getElementById('informacion-personal').scrollIntoView({behavior:'smooth',block:'start'})">
+          <span class="btn-icon">✚</span><span>Más información</span>
+        </button>
+      </div>
+
+      <button class="emergency-button" type="button" onclick="emergencyCall()">
+        <span class="em-icon">⚠</span>
+        <span><strong>En caso de emergencia</strong><span>Presiona para llamar al contacto principal</span></span>
+        <span class="arrow">›</span>
+      </button>
+
+      <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
+    </div>`;
+
+  attachHoldReveal(p);
 }
 
-.visor-foto{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.92);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:99999;
-    animation:fade .2s;
+function emergencyCall(){
+  const id = location.hash.slice(1).toLowerCase();
+  const p = PERFILES[id];
+  if(p && p.telefonos && p.telefonos[0]){
+    window.location.href = 'tel:' + p.telefonos[0].numero;
+  }
 }
 
-.visor-foto img{
-    max-width:92%;
-    max-height:92%;
-    object-fit:contain;
-    border-radius:14px;
-    box-shadow:0 0 35px rgba(0,0,0,.6);
+// ── Mantener presionada la foto para revelar identidad secreta ──
+function attachHoldReveal(p){
+  if(!p.holdReveal || !p.fotoSecreta) return;
+  const wrap = document.querySelector('.photo-wrap');
+  if(!wrap) return;
+
+  const start = (e) => {
+    if(e.type === 'touchstart') e.preventDefault();
+    wrap.classList.add('holding');
+    holdTimer = setTimeout(() => triggerSpideyReveal(p, wrap), HOLD_DURATION);
+  };
+  const cancel = () => {
+    wrap.classList.remove('holding');
+    clearTimeout(holdTimer);
+  };
+
+  wrap.addEventListener('mousedown', start);
+  wrap.addEventListener('mouseup', cancel);
+  wrap.addEventListener('mouseleave', cancel);
+  wrap.addEventListener('touchstart', start, {passive:false});
+  wrap.addEventListener('touchend', cancel);
+  wrap.addEventListener('touchcancel', cancel);
+  wrap.addEventListener('contextmenu', e => e.preventDefault());
 }
 
-.cerrar{
-    position:absolute;
-    top:20px;
-    right:30px;
-    color:white;
-    font-size:42px;
-    font-weight:bold;
-    cursor:pointer;
-    user-select:none;
+function triggerSpideyReveal(p, wrap){
+  wrap.classList.remove('holding');
+  const overlay = document.createElement('div');
+  overlay.className = 'spidey-overlay';
+  overlay.innerHTML = '<span class="spidey-emoji">🕷️</span>';
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    const img = wrap.querySelector('img');
+    if(img) img.src = p.fotoSecreta;
+    overlay.remove();
+    const campo = document.getElementById('campo-identidad');
+    if(campo) campo.classList.add('mostrar');
+  }, 1400);
 }
 
-@keyframes fade{
-    from{opacity:0;}
-    to{opacity:1;}
+function abrirFoto(src){
+  if(document.querySelector('.visor-foto')) return;
+  const visor = document.createElement('div');
+  visor.className = 'visor-foto';
+  visor.innerHTML = `<span class="cerrar">&times;</span><img src="${src}" alt="Foto">`;
+  visor.onclick = function(e){
+    if(e.target === visor || e.target.classList.contains('cerrar')) visor.remove();
+  };
+  document.body.appendChild(visor);
 }
+
+window.addEventListener('hashchange', render);
+render();
+
+// ── Tema ──
+function updateToggleIcon(){
+  const btn = document.getElementById('theme-toggle');
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if(btn) btn.textContent = isLight ? '🌙' : '☀️';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', function(){
+  const root = document.documentElement;
+  const isLight = root.getAttribute('data-theme') === 'light';
+  if(isLight){
+    root.removeAttribute('data-theme');
+    localStorage.setItem('tagmex-theme','dark');
+  }else{
+    root.setAttribute('data-theme','light');
+    localStorage.setItem('tagmex-theme','light');
+  }
+  updateToggleIcon();
+});
+updateToggleIcon();
+
+// ── Splash ──
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    const splash = document.getElementById('splash');
+    if(splash){
+      splash.classList.add('splash-hide');
+      setTimeout(function(){splash.remove();},600);
+    }
+  },1800);
+});
+</script>
+
+</body>
+</html>
