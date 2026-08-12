@@ -281,18 +281,8 @@ function render(){
   // FOTO
   // ---------------------------------------------
 
-  const fotoHtml = p.foto
-
-    ? `
-      <img
-        src="${p.foto}"
-        alt="${p.nombre}"
-        onclick="abrirFoto(this.src)"
-        loading="lazy"
-        draggable="false"
-        oncontextmenu="return false;"
-      >
-    `
+ const fotoHtml = p.foto
+  ? `<img src="${p.foto}" alt="${p.nombre}" loading="lazy" draggable="false" oncontextmenu="return false;">`
 
     : `
       <div class="ph-fallback">
@@ -1009,89 +999,64 @@ function emergencyCall(){
 // =====================================================
 
 function attachHoldReveal(p){
+  const wrap = document.querySelector('.photo-wrap');
+  if(!wrap) return;
 
-  if(!p.holdReveal || !p.fotoSecreta){
-    return;
-  }
+  const img = wrap.querySelector('img');
+  if(!img) return;
 
+  let holdTimer = null;
+  let startTime = 0;
+  let longPressActivated = false;
 
-  const wrap =
-    document.querySelector('.photo-wrap');
+  const HOLD_DURATION = 5000;
 
-
-  if(!wrap){
-    return;
-  }
-
-
-  const start = (e) => {
-
-    if(e.type === 'touchstart'){
-      e.preventDefault();
-    }
-
+  function iniciar(e){
+    startTime = Date.now();
+    longPressActivated = false;
 
     wrap.classList.add('holding');
 
-
-    holdTimer = setTimeout(() => {
-
-      triggerSpideyReveal(p, wrap);
-
-    }, HOLD_DURATION);
-
-  };
-
-
-  const cancel = () => {
-
-    wrap.classList.remove('holding');
-
     clearTimeout(holdTimer);
 
-  };
+    holdTimer = setTimeout(() => {
+      longPressActivated = true;
+      triggerSpideyReveal(p, wrap);
+    }, HOLD_DURATION);
+  }
 
+  function terminar(e){
+    clearTimeout(holdTimer);
+    wrap.classList.remove('holding');
 
-  wrap.addEventListener(
-    'mousedown',
-    start
-  );
+    const tiempoPresionado = Date.now() - startTime;
 
-  wrap.addEventListener(
-    'mouseup',
-    cancel
-  );
+    // Si fue un toque corto, abrir la foto
+    if(!longPressActivated && tiempoPresionado < HOLD_DURATION){
+      abrirFoto(img.src);
+    }
+  }
 
-  wrap.addEventListener(
-    'mouseleave',
-    cancel
-  );
+  function cancelar(){
+    clearTimeout(holdTimer);
+    wrap.classList.remove('holding');
+  }
 
+  // PC
+  wrap.addEventListener('mousedown', iniciar);
+  wrap.addEventListener('mouseup', terminar);
+  wrap.addEventListener('mouseleave', cancelar);
 
-  wrap.addEventListener(
-    'touchstart',
-    start,
-    {passive:false}
-  );
+  // CELULAR / TABLET
+  wrap.addEventListener('touchstart', iniciar, {passive:true});
+  wrap.addEventListener('touchend', terminar, {passive:true});
+  wrap.addEventListener('touchcancel', cancelar, {passive:true});
 
-  wrap.addEventListener(
-    'touchend',
-    cancel
-  );
-
-  wrap.addEventListener(
-    'touchcancel',
-    cancel
-  );
-
-
-  wrap.addEventListener(
-    'contextmenu',
-    e => e.preventDefault()
-  );
-
+  // Evitar menú contextual
+  wrap.addEventListener('contextmenu', e => {
+    e.preventDefault();
+  });
 }
-
 
 // =====================================================
 // REVELAR SPIDER-MAN
