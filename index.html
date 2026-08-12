@@ -93,6 +93,7 @@ const PERFILES = {
       { etiqueta: "Sergio Alejandro", numero: "8711044146" },
       { etiqueta: "Adriana Puentes (Emergencia)", numero: "8713962060" }
     ],
+    telefonoEmergencia: "8713962060",
     direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
@@ -272,7 +273,7 @@ function render(){
 
       <button class="emergency-button" type="button" onclick="emergencyCall()">
         <span class="em-icon">⚠</span>
-        <span><strong>En caso de emergencia</strong><span>Presiona para llamar al contacto principal</span></span>
+        <span><strong>En caso de emergencia</strong><span>Presiona para llamar al contacto de emergencia</span></span>
         <span class="arrow">›</span>
       </button>
 
@@ -285,8 +286,14 @@ function render(){
 function emergencyCall(){
   const id = location.hash.slice(1).toLowerCase();
   const p = PERFILES[id];
-  if(p && p.telefonos && p.telefonos[0]){
-    window.location.href = 'tel:' + p.telefonos[0].numero;
+  if(!p) return;
+
+  // Si existe un número de emergencia específico, usa ese número.
+  // Si no existe, utiliza el primer contacto registrado como respaldo.
+  const numero = p.telefonoEmergencia || (p.telefonos && p.telefonos[0] ? p.telefonos[0].numero : '');
+
+  if(numero){
+    window.location.href = 'tel:' + numero;
   }
 }
 
