@@ -161,8 +161,8 @@ body{
   background:var(--card-bg);
 }
 .brand-footer-logo{
-  height:24px;
-  opacity:.82;
+  height:42px;
+  opacity:.85;
 }
 
 /* ---------- Botón de modo oscuro ---------- */
