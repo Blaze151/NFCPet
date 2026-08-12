@@ -7,92 +7,22 @@
 <link rel="icon" type="image/svg+xml" href="logo/tagmex-vital-isotipo-negro-rojo.svg">
 <link rel="stylesheet" href="style.css">
 <script>
-/* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo de claro→oscuro */
 (function(){
   try{
-    if(localStorage.getItem('tagmex-theme') === 'dark'){
-      document.documentElement.setAttribute('data-theme','dark');
+    if(localStorage.getItem('tagmex-theme') === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
     }
   }catch(e){}
 })();
 </script>
-<style>
-/* ── Estilos para la función especial de Sergio (mantén aquí o muévelos a style.css) ── */
-.photo-wrap { position: relative; }
-.photo-wrap img {
-  -webkit-touch-callout: none; /* evita el menú de "Guardar imagen/Buscar con Google Lens" en iOS */
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.photo-wrap.holding::after {
-  content: "";
-  position: absolute; inset: -6px;
-  border-radius: 50%;
-  border: 4px solid rgba(196,0,0,.15);
-  border-top-color: #c40000;
-  animation: holdSpin 5s linear forwards;
-  pointer-events: none;
-}
-@keyframes holdSpin {
-  to { transform: rotate(360deg); border-top-color: #0033a0; }
-}
-
-.spidey-overlay {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle, rgba(196,0,0,.9), rgba(0,51,160,.9));
-  animation: spideyPulse 1.4s ease forwards;
-  overflow: hidden;
-  z-index: 9999;
-}
-.spidey-overlay::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.35) 0deg 2deg, transparent 2deg 20deg);
-  animation: spideyWeb 1.2s ease-out forwards;
-}
-.spidey-emoji {
-  font-size: 6rem;
-  z-index: 1;
-  animation: spideyPop 1.4s ease forwards;
-}
-@keyframes spideyPulse {
-  0%   { opacity: 0; transform: scale(.6); }
-  20%  { opacity: 1; transform: scale(1.1); }
-  60%  { transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.3); }
-}
-@keyframes spideyWeb {
-  0%   { transform: scale(0) rotate(0deg); opacity: .9; }
-  100% { transform: scale(2) rotate(180deg); opacity: 0; }
-}
-@keyframes spideyPop {
-  0%, 60% { transform: scale(0) rotate(-20deg); opacity: 0; }
-  75%     { transform: scale(1.4) rotate(10deg); opacity: 1; }
-  100%    { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-.field.oculto { display: none; }
-.field.oculto.mostrar {
-  display: flex;
-  animation: fadeInField .6s ease;
-}
-@keyframes fadeInField {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-</style>
 </head>
 <body>
 
-<!-- Splash de bienvenida: se muestra 5s al cargar, luego se retira solo -->
 <div id="splash" class="splash">
   <img src="logo/tagmex-vital-imagotipo-blanco-rojo.svg" alt="Tagmex Vital" class="splash-logo">
 </div>
 
-<!-- Botón de modo oscuro: flotante, visible en cualquier ficha -->
-<button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro">🌙</button>
+<button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar tema">☀️</button>
 
 <div class="page">
   <div class="card" id="card"></div>
@@ -102,9 +32,8 @@
 </div>
 
 <script>
-// ── Base de datos: edita/agrega perfiles aquí ──
+// ── Base de datos: agrega o modifica perfiles aquí ──
 const PERFILES = {
-
   abi: {
     tipo: "mascota",
     nombre: "Abi",
@@ -113,6 +42,7 @@ const PERFILES = {
     critico: "",
     tipoSangre: "N/A",
     alergias: "N/A",
+    condicionMedica: "N/A",
     telefonos: [
       { etiqueta: "Humberto Morales Carrillo", numero: "8713588027" },
       { etiqueta: "Daniel Hernández Bajini", numero: "8716044220" }
@@ -129,6 +59,9 @@ const PERFILES = {
     critico: "",
     tipoSangre: "B+",
     alergias: "A los pendejos",
+    condicionMedica: "N/A",
+    correo: "",
+    ocupacion: "Estudiante de Ingeniería Electrónica",
     telefonos: [
       { etiqueta: "Ing. Sergio Guardado", numero: "8711044146" }
     ],
@@ -141,12 +74,12 @@ const PERFILES = {
     nombre: "Sergio Alejandro Guardado Martínez",
     detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
     foto: "1.img/sergio.jpg",
-    // ── Función especial: mantener presionada la foto 10s ──
     holdReveal: true,
     fotoSecreta: "1.img/sergio-spiderman.jpg",
     critico: "",
     tipoSangre: "A+",
     alergias: "No especificadas",
+    condicionMedica: "N/A",
     correo: "sergioteclaguna@gmail.com",
     ocupacion: "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
     estudios: [
@@ -163,36 +96,70 @@ const PERFILES = {
     direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
-
 };
 
 let holdTimer = null;
-const HOLD_DURATION = 5000; // 5 segundos
+const HOLD_DURATION = 5000;
+
+function hasValue(value){
+  if(value === undefined || value === null) return false;
+  const text = String(value).trim().toLowerCase();
+  return text !== '' && text !== 'n/a' && text !== 'no especificadas' && text !== 'no especificado';
+}
+
+function icon(type){
+  const icons = {
+    medical:'♥',
+    allergy:'⚠',
+    contact:'♧',
+    personal:'●',
+    mail:'✉',
+    calendar:'▣',
+    location:'⌖',
+    work:'▤',
+    studies:'▥',
+    hobby:'★'
+  };
+  return icons[type] || '•';
+}
 
 function render(){
-
   const id = location.hash.slice(1).toLowerCase();
   const p = PERFILES[id];
   const card = document.getElementById('card');
 
   if(!p){
     card.innerHTML = `
-      <div class="empty">
-        <p>Esta ficha no está activa todavía.</p>
-        <p>Verifica el enlace, por ejemplo:<br>
-        <code>${location.origin}${location.pathname}#abi</code></p>
+      <div class="body">
+        <div class="section-card">
+          <div class="empty">
+            <p>Esta ficha no está activa todavía.</p>
+            <p>Verifica el enlace, por ejemplo:<br><code>${location.origin}${location.pathname}#abi</code></p>
+          </div>
+        </div>
       </div>`;
     return;
   }
 
   const fotoHtml = p.foto
-  ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy" draggable="false" oncontextmenu="return false;">`
-  : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
+    ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy" draggable="false" oncontextmenu="return false;">`
+    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
 
-  const telefonosHtml = p.telefonos.map(t => `
-    <div class="field">
-      <span class="k">${t.etiqueta}</span>
-      <a class="v" href="tel:${t.numero}">${t.numero}</a>
+  const allergyTag = hasValue(p.alergias)
+    ? `<div class="alert-tag"><span class="tag-icon">⚠</span><span><strong>Alergia:</strong> ${p.alergias}</span></div>` : '';
+  const conditionTag = hasValue(p.condicionMedica)
+    ? `<div class="alert-tag"><span class="tag-icon">♥</span><span><strong>Condición:</strong> ${p.condicionMedica}</span></div>` : '';
+
+  const medicalTags = allergyTag || conditionTag
+    ? `<div class="alert-tags">${allergyTag}${conditionTag}</div>` : '';
+
+  const telefonosHtml = (p.telefonos || []).map(t => `
+    <div class="contact-row">
+      <div class="contact-main">
+        <div class="contact-name">${t.etiqueta}</div>
+        <span class="contact-phone">${t.numero}</span>
+      </div>
+      <a class="call-circle" href="tel:${t.numero}" aria-label="Llamar a ${t.etiqueta}">☎</a>
     </div>`).join('');
 
   const direccionHtml = p.mapsUrl
@@ -200,90 +167,137 @@ function render(){
     : `<span class="v">${p.direccion}</span>`;
 
   card.innerHTML = `
-    <div class="band">
-      <p class="eyebrow">${p.tipo === 'mascota' ? 'Ficha de mascota' : 'Ficha de emergencia'}</p>
-      <h1>${p.nombre}</h1>
-      <p class="sub">${p.detalle}</p>
-      <div class="photo-wrap">${fotoHtml}</div>
+    <div class="topbar">
+      <div class="topbar-brand">
+        <img src="logo/tagmex-vital-isotipo-blanco-rojo.svg" alt="Tagmex Vital" class="topbar-logo">
+        <span class="topbar-title">Ficha de emergencia</span>
+      </div>
+      <div class="nfc-badge"><span class="nfc-icon">◉</span> NFC</div>
     </div>
 
+    <section class="hero">
+      <div class="hero-photo-wrap">
+        <div class="photo-wrap">${fotoHtml}</div>
+        <div class="medical-plus">+</div>
+      </div>
+      <h1>${p.nombre}</h1>
+      <p class="sub">${p.detalle}</p>
+
+      <div class="medical-summary">
+        <div class="blood-card">
+          <span class="blood-value">${p.tipoSangre || 'N/A'}</span>
+          <span class="blood-label">Tipo de sangre</span>
+        </div>
+        ${medicalTags}
+      </div>
+    </section>
+
     <div class="body">
-
       ${p.critico ? `
-      <div class="critical">
-        <span class="dot"></span>
-        <div><strong>Importante</strong><span>${p.critico}</span></div>
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">⚠</span> Importante</div>
+        <div class="field"><span class="v" style="text-align:left;width:100%;">${p.critico}</span></div>
       </div>` : ''}
 
-      <div class="field">
-        <span class="k">Tipo de sangre</span>
-        <span class="v">${p.tipoSangre}</span>
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">♥</span> Información médica</div>
+        ${hasValue(p.alergias) ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">⚠</span>Alergias</span>
+          <span class="v">${p.alergias}</span>
+        </div>` : ''}
+        ${hasValue(p.condicionMedica) ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">♥</span>Condiciones médicas</span>
+          <span class="v">${p.condicionMedica}</span>
+        </div>` : ''}
+        <div class="field">
+          <span class="k"><span class="field-icon">●</span>Tipo de sangre</span>
+          <span class="v">${p.tipoSangre || 'N/A'}</span>
+        </div>
       </div>
 
-      <div class="field">
-        <span class="k">Alergias</span>
-        <span class="v">${p.alergias}</span>
+      <div class="section-card">
+        <div class="section-heading"><span class="heading-icon">♧</span> Contacto de emergencia</div>
+        ${telefonosHtml || '<div class="field"><span class="v" style="text-align:left;width:100%;">Sin contactos registrados.</span></div>'}
       </div>
 
-      ${p.correo ? `
-      <div class="field">
-        <span class="k">Correo</span>
-        <a class="v" href="mailto:${p.correo}">${p.correo}</a>
-      </div>` : ''}
-
-      ${p.ocupacion ? `
-      <div class="field">
-        <span class="k">Ocupación</span>
-        <span class="v">${p.ocupacion}</span>
-      </div>` : ''}
-
-      ${p.estudios ? `
-      <div class="field">
-        <span class="k">Estudios</span>
-        <span class="v">${p.estudios.join('<br>')}</span>
-      </div>` : ''}
-
-      ${p.hobbies ? `
-      <div class="field">
-        <span class="k">Hobbies</span>
-        <span class="v">${p.hobbies}</span>
-      </div>` : ''}
-
-      ${p.identidad ? `
-      <div class="field oculto" id="campo-identidad">
-        <span class="k">Identidad secreta</span>
-        <span class="v">${p.identidad}</span>
-      </div>` : ''}
-
-      <div class="field">
-        <span class="k">Dirección</span>
-        ${direccionHtml}
+      <div class="section-card" id="informacion-personal">
+        <div class="section-heading"><span class="heading-icon">●</span> Información personal</div>
+        ${p.correo ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">✉</span>Correo</span>
+          <a class="v" href="mailto:${p.correo}">${p.correo}</a>
+        </div>` : ''}
+        ${p.fechaNacimiento ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">▣</span>Fecha de nacimiento</span>
+          <span class="v">${p.fechaNacimiento}</span>
+        </div>` : ''}
+        ${p.ocupacion ? `
+        <div class="field long">
+          <span class="k"><span class="field-icon">▤</span>Ocupación</span>
+          <span class="v">${p.ocupacion}</span>
+        </div>` : ''}
+        ${p.estudios ? `
+        <div class="field long">
+          <span class="k"><span class="field-icon">▥</span>Estudios</span>
+          <span class="v">${p.estudios.join('<br>')}</span>
+        </div>` : ''}
+        ${p.hobbies ? `
+        <div class="field">
+          <span class="k"><span class="field-icon">★</span>Hobbies</span>
+          <span class="v">${p.hobbies}</span>
+        </div>` : ''}
+        <div class="field long">
+          <span class="k"><span class="field-icon">⌖</span>Dirección</span>
+          ${direccionHtml}
+        </div>
+        ${p.identidad ? `
+        <div class="field oculto" id="campo-identidad">
+          <span class="k"><span class="field-icon">★</span>Identidad secreta</span>
+          <span class="v">${p.identidad}</span>
+        </div>` : ''}
       </div>
-
-      <p class="section-label">Contactos</p>
-
-      ${telefonosHtml}
 
       <div class="actions">
-        <a class="btn primary" href="tel:${p.telefonos[0].numero}">Llamar</a>
-        ${p.mapsUrl ? `<a class="btn secondary" href="${p.mapsUrl}" target="_blank" rel="noopener">Ver mapa</a>` : ''}
+        <a class="btn primary" href="tel:${p.telefonos && p.telefonos[0] ? p.telefonos[0].numero : ''}">
+          <span class="btn-icon">☎</span><span>Llamar</span>
+        </a>
+        ${p.mapsUrl ? `<a class="btn secondary" href="${p.mapsUrl}" target="_blank" rel="noopener"><span class="btn-icon">⌖</span><span>Ver mapa</span></a>` : ''}
+        <button class="btn" type="button" onclick="document.getElementById('informacion-personal').scrollIntoView({behavior:'smooth',block:'start'})">
+          <span class="btn-icon">✚</span><span>Más información</span>
+        </button>
       </div>
 
-      <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
+      <button class="emergency-button" type="button" onclick="emergencyCall()">
+        <span class="em-icon">⚠</span>
+        <span><strong>En caso de emergencia</strong><span>Presiona para llamar al contacto principal</span></span>
+        <span class="arrow">›</span>
+      </button>
 
+      <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
     </div>`;
 
   attachHoldReveal(p);
 }
 
-// ── Mantener presionada la foto 10s para revelar identidad secreta ──
+function emergencyCall(){
+  const id = location.hash.slice(1).toLowerCase();
+  const p = PERFILES[id];
+  if(p && p.telefonos && p.telefonos[0]){
+    window.location.href = 'tel:' + p.telefonos[0].numero;
+  }
+}
+
+// ── Mantener presionada la foto para revelar identidad secreta ──
 function attachHoldReveal(p){
   if(!p.holdReveal || !p.fotoSecreta) return;
-
   const wrap = document.querySelector('.photo-wrap');
   if(!wrap) return;
 
-  const start = () => {
+  const start = (e) => {
+    if(e.type === 'touchstart') e.preventDefault();
     wrap.classList.add('holding');
     holdTimer = setTimeout(() => triggerSpideyReveal(p, wrap), HOLD_DURATION);
   };
@@ -295,15 +309,14 @@ function attachHoldReveal(p){
   wrap.addEventListener('mousedown', start);
   wrap.addEventListener('mouseup', cancel);
   wrap.addEventListener('mouseleave', cancel);
-  wrap.addEventListener('touchstart', start, { passive: true });
+  wrap.addEventListener('touchstart', start, {passive:false});
   wrap.addEventListener('touchend', cancel);
   wrap.addEventListener('touchcancel', cancel);
-  wrap.addEventListener('contextmenu', (e) => e.preventDefault());
+  wrap.addEventListener('contextmenu', e => e.preventDefault());
 }
 
 function triggerSpideyReveal(p, wrap){
   wrap.classList.remove('holding');
-
   const overlay = document.createElement('div');
   overlay.className = 'spidey-overlay';
   overlay.innerHTML = '<span class="spidey-emoji">🕷️</span>';
@@ -313,70 +326,55 @@ function triggerSpideyReveal(p, wrap){
     const img = wrap.querySelector('img');
     if(img) img.src = p.fotoSecreta;
     overlay.remove();
-
     const campo = document.getElementById('campo-identidad');
     if(campo) campo.classList.add('mostrar');
   }, 1400);
 }
 
 function abrirFoto(src){
-  // Evita abrir dos visores
-  if(document.querySelector(".visor-foto")) return;
-
-  const visor = document.createElement("div");
-  visor.className = "visor-foto";
-
-  visor.innerHTML = `
-      <span class="cerrar">&times;</span>
-      <img src="${src}" alt="Foto">
-  `;
-
+  if(document.querySelector('.visor-foto')) return;
+  const visor = document.createElement('div');
+  visor.className = 'visor-foto';
+  visor.innerHTML = `<span class="cerrar">&times;</span><img src="${src}" alt="Foto">`;
   visor.onclick = function(e){
-      if(e.target === visor || e.target.classList.contains("cerrar")){
-          visor.remove();
-      }
+    if(e.target === visor || e.target.classList.contains('cerrar')) visor.remove();
   };
-
   document.body.appendChild(visor);
 }
 
 window.addEventListener('hashchange', render);
 render();
 
-</script>
-
-<script>
-/* ── Splash de bienvenida y modo oscuro (nuevo, no modifica nada de lo anterior) ── */
-
+// ── Tema ──
 function updateToggleIcon(){
   const btn = document.getElementById('theme-toggle');
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if(btn) btn.textContent = isLight ? '🌙' : '☀️';
 }
 
 document.getElementById('theme-toggle').addEventListener('click', function(){
   const root = document.documentElement;
-  const isDark = root.getAttribute('data-theme') === 'dark';
-  if(isDark){
+  const isLight = root.getAttribute('data-theme') === 'light';
+  if(isLight){
     root.removeAttribute('data-theme');
-    localStorage.setItem('tagmex-theme', 'light');
-  } else {
-    root.setAttribute('data-theme', 'dark');
-    localStorage.setItem('tagmex-theme', 'dark');
+    localStorage.setItem('tagmex-theme','dark');
+  }else{
+    root.setAttribute('data-theme','light');
+    localStorage.setItem('tagmex-theme','light');
   }
   updateToggleIcon();
 });
-
 updateToggleIcon();
 
+// ── Splash ──
 window.addEventListener('load', function(){
   setTimeout(function(){
     const splash = document.getElementById('splash');
     if(splash){
       splash.classList.add('splash-hide');
-      setTimeout(function(){ splash.remove(); }, 600);
+      setTimeout(function(){splash.remove();},600);
     }
-  }, 2500);
+  },1800);
 });
 </script>
 
