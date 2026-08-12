@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Ficha de emergencia</title>
+
 <link rel="icon" type="image/svg+xml" href="logo/tagmex-vital-isotipo-negro-rojo.svg">
 <link rel="stylesheet" href="style.css">
 
@@ -21,24 +22,39 @@
 <body>
 
 <div id="splash" class="splash">
-  <img src="logo/tagmex-vital-imagotipo-blanco-rojo.svg" alt="Tagmex Vital" class="splash-logo">
+  <img
+    src="logo/tagmex-vital-imagotipo-blanco-rojo.svg"
+    alt="Tagmex Vital"
+    class="splash-logo"
+  >
 </div>
 
-<button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar tema">☀️</button>
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-label="Cambiar tema"
+>☀️</button>
 
 <div class="page">
+
   <div class="card" id="card"></div>
 
   <div class="brand-footer">
-    <img src="logo/tagmex-vital-logotipo-negro-rojo.svg" alt="Tagmex Vital" class="brand-footer-logo">
+    <img
+      src="logo/tagmex-vital-logotipo-negro-rojo.svg"
+      alt="Tagmex Vital"
+      class="brand-footer-logo"
+    >
   </div>
+
 </div>
 
 <script>
 
-// ─────────────────────────────────────────────
+// =====================================================
 // BASE DE DATOS
-// ─────────────────────────────────────────────
+// =====================================================
 
 const PERFILES = {
 
@@ -53,13 +69,20 @@ const PERFILES = {
     condicionMedica: "N/A",
 
     telefonos: [
-      { etiqueta: "Humberto Morales Carrillo", numero: "8713588027" },
-      { etiqueta: "Daniel Hernández Bajini", numero: "8716044220" }
+      {
+        etiqueta: "Humberto Morales Carrillo",
+        numero: "8713588027"
+      },
+      {
+        etiqueta: "Daniel Hernández Bajini",
+        numero: "8716044220"
+      }
     ],
 
     direccion: "Aula 34G, Instituto Tecnológico de la Laguna",
 
-    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+    mapsUrl:
+      "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   },
 
 
@@ -72,37 +95,51 @@ const PERFILES = {
     tipoSangre: "B+",
     alergias: "A los pendejos",
     condicionMedica: "N/A",
+
     correo: "",
+
     ocupacion: "Estudiante de Ingeniería Electrónica",
 
     telefonos: [
-      { etiqueta: "Ing. Sergio Guardado", numero: "8711044146" }
+      {
+        etiqueta: "Ing. Sergio Guardado",
+        numero: "8711044146"
+      }
     ],
 
     direccion: "Edificio 34F, Instituto Tecnológico de la Laguna",
 
-    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+    mapsUrl:
+      "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   },
 
 
   sergio: {
     tipo: "persona",
+
     nombre: "Sergio Alejandro Guardado Martínez",
-    detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
+
+    detalle:
+      "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
 
     foto: "1.img/sergio.jpg",
 
+    // Función secreta
     holdReveal: true,
     fotoSecreta: "1.img/sergio-spiderman.jpg",
 
     critico: "",
+
     tipoSangre: "A+",
+
     alergias: "No especificadas",
+
     condicionMedica: "N/A",
 
     correo: "sergioteclaguna@gmail.com",
 
-    ocupacion: "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
+    ocupacion:
+      "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
 
     estudios: [
       "Ingeniero en Electrónica",
@@ -115,27 +152,46 @@ const PERFILES = {
     identidad: "🕷️ Spider-Man",
 
     telefonos: [
-      { etiqueta: "Sergio Alejandro", numero: "8711044146" },
-      { etiqueta: "Adriana Puentes (Emergencia)", numero: "8713962060" }
+      {
+        etiqueta: "Sergio Alejandro",
+        numero: "8711044146"
+      },
+      {
+        etiqueta: "Adriana Puentes (Emergencia)",
+        numero: "8713962060"
+      }
     ],
 
     telefonoEmergencia: "8713962060",
 
-    direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
+    direccion:
+      "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
 
-    mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
+    mapsUrl:
+      "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
 
 };
 
 
-// ─────────────────────────────────────────────
-// FUNCIONES GENERALES
-// ─────────────────────────────────────────────
+// =====================================================
+// VARIABLES
+// =====================================================
+
+let holdTimer = null;
+
+const HOLD_DURATION = 5000;
+
+
+// =====================================================
+// FUNCIONES AUXILIARES
+// =====================================================
 
 function hasValue(value){
 
-  if(value === undefined || value === null) return false;
+  if(value === undefined || value === null){
+    return false;
+  }
 
   const text = String(value).trim().toLowerCase();
 
@@ -148,28 +204,32 @@ function hasValue(value){
 }
 
 
+// =====================================================
+// ICONOS
+// =====================================================
+
 function icon(type){
 
   const icons = {
-    medical:'♥',
-    allergy:'⚠',
-    contact:'♧',
-    personal:'●',
-    mail:'✉',
-    calendar:'▣',
-    location:'⌖',
-    work:'▤',
-    studies:'▥',
-    hobby:'★'
+    medical: '♥',
+    allergy: '⚠',
+    contact: '♧',
+    personal: '●',
+    mail: '✉',
+    calendar: '▣',
+    location: '⌖',
+    work: '▤',
+    studies: '▥',
+    hobby: '★'
   };
 
   return icons[type] || '•';
 }
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // RENDER
-// ─────────────────────────────────────────────
+// =====================================================
 
 function render(){
 
@@ -180,20 +240,36 @@ function render(){
   const card = document.getElementById('card');
 
 
+  // ---------------------------------------------
+  // Perfil inexistente
+  // ---------------------------------------------
+
   if(!p){
 
     card.innerHTML = `
       <div class="body">
+
         <div class="section-card">
+
           <div class="empty">
-            <p>Esta ficha no está activa todavía.</p>
+
+            <p>
+              Esta ficha no está activa todavía.
+            </p>
 
             <p>
               Verifica el enlace, por ejemplo:<br>
-              <code>${location.origin}${location.pathname}#abi</code>
+
+              <code>
+                ${location.origin}${location.pathname}#abi
+              </code>
+
             </p>
+
           </div>
+
         </div>
+
       </div>
     `;
 
@@ -201,9 +277,9 @@ function render(){
   }
 
 
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
   // FOTO
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
 
   const fotoHtml = p.foto
 
@@ -211,7 +287,7 @@ function render(){
       <img
         src="${p.foto}"
         alt="${p.nombre}"
-        class="foto-perfil"
+        onclick="abrirFoto(this.src)"
         loading="lazy"
         draggable="false"
         oncontextmenu="return false;"
@@ -222,23 +298,28 @@ function render(){
       <div class="ph-fallback">
         ${p.tipo === 'mascota'
           ? '🐾'
-          : (p.tipo === 'niño' ? '🧒' : '🧑')}
+          : (p.tipo === 'niño' ? '🧒' : '🧑')
+        }
       </div>
     `;
 
 
-  // ─────────────────────────────────────────
-  // ALERTAS MÉDICAS
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
+  // ALERTAS
+  // ---------------------------------------------
 
   const allergyTag = hasValue(p.alergias)
 
     ? `
       <div class="alert-tag">
+
         <span class="tag-icon">⚠</span>
+
         <span>
-          <strong>Alergia:</strong> ${p.alergias}
+          <strong>Alergia:</strong>
+          ${p.alergias}
         </span>
+
       </div>
     `
 
@@ -249,33 +330,39 @@ function render(){
 
     ? `
       <div class="alert-tag">
+
         <span class="tag-icon">♥</span>
+
         <span>
-          <strong>Condición:</strong> ${p.condicionMedica}
+          <strong>Condición:</strong>
+          ${p.condicionMedica}
         </span>
+
       </div>
     `
 
     : '';
 
 
-  const medicalTags = allergyTag || conditionTag
+  const medicalTags =
+    allergyTag || conditionTag
 
-    ? `
-      <div class="alert-tags">
-        ${allergyTag}
-        ${conditionTag}
-      </div>
-    `
+      ? `
+        <div class="alert-tags">
+          ${allergyTag}
+          ${conditionTag}
+        </div>
+      `
 
-    : '';
+      : '';
 
 
-  // ─────────────────────────────────────────
-  // TELÉFONOS
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
+  // TELEFONOS
+  // ---------------------------------------------
 
   const telefonosHtml = (p.telefonos || [])
+
     .map(t => `
 
       <div class="contact-row">
@@ -303,12 +390,13 @@ function render(){
       </div>
 
     `)
+
     .join('');
 
 
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
   // DIRECCIÓN
-  // ─────────────────────────────────────────
+  // ---------------------------------------------
 
   const direccionHtml = p.mapsUrl
 
@@ -330,11 +418,13 @@ function render(){
     `;
 
 
-  // ─────────────────────────────────────────
+  // =====================================================
   // HTML PRINCIPAL
-  // ─────────────────────────────────────────
+  // =====================================================
 
   card.innerHTML = `
+
+    <!-- CABECERA -->
 
     <div class="topbar">
 
@@ -353,12 +443,19 @@ function render(){
       </div>
 
       <div class="nfc-badge">
-        <span class="nfc-icon">◉</span>
+
+        <span class="nfc-icon">
+          ◉
+        </span>
+
         NFC
+
       </div>
 
     </div>
 
+
+    <!-- HERO -->
 
     <section class="hero">
 
@@ -408,16 +505,25 @@ function render(){
     </section>
 
 
+    <!-- CONTENIDO -->
+
     <div class="body">
 
+
+      <!-- IMPORTANTE -->
 
       ${p.critico ? `
 
         <div class="section-card">
 
           <div class="section-heading">
-            <span class="heading-icon">⚠</span>
+
+            <span class="heading-icon">
+              ⚠
+            </span>
+
             Importante
+
           </div>
 
           <div class="field">
@@ -435,6 +541,8 @@ function render(){
 
       ` : ''}
 
+
+      <!-- INFORMACIÓN MÉDICA -->
 
       <div class="section-card">
 
@@ -516,6 +624,8 @@ function render(){
       </div>
 
 
+      <!-- CONTACTO DE EMERGENCIA -->
+
       <div class="section-card">
 
         <div class="section-heading">
@@ -527,6 +637,7 @@ function render(){
           Contacto de emergencia
 
         </div>
+
 
         ${
           telefonosHtml ||
@@ -547,6 +658,8 @@ function render(){
 
       </div>
 
+
+      <!-- INFORMACIÓN PERSONAL -->
 
       <div
         class="section-card"
@@ -699,6 +812,12 @@ function render(){
         </div>
 
 
+        <!-- ==========================================
+             IDENTIDAD SECRETA
+             IMPORTANTE:
+             Empieza completamente oculta.
+             ========================================== -->
+
         ${p.identidad ? `
 
           <div
@@ -727,8 +846,9 @@ function render(){
       </div>
 
 
-      <div class="actions">
+      <!-- BOTONES -->
 
+      <div class="actions">
 
         <a
           class="btn primary"
@@ -753,35 +873,42 @@ function render(){
         ${
           p.mapsUrl
 
-          ? `
+            ? `
 
-            <a
-              class="btn secondary"
-              href="${p.mapsUrl}"
-              target="_blank"
-              rel="noopener"
-            >
+              <a
+                class="btn secondary"
+                href="${p.mapsUrl}"
+                target="_blank"
+                rel="noopener"
+              >
 
-              <span class="btn-icon">
-                ⌖
-              </span>
+                <span class="btn-icon">
+                  ⌖
+                </span>
 
-              <span>
-                Ver mapa
-              </span>
+                <span>
+                  Ver mapa
+                </span>
 
-            </a>
+              </a>
 
-          `
+            `
 
-          : ''
+            : ''
         }
 
 
         <button
           class="btn"
           type="button"
-          onclick="document.getElementById('informacion-personal').scrollIntoView({behavior:'smooth',block:'start'})"
+          onclick="
+            document
+              .getElementById('informacion-personal')
+              .scrollIntoView({
+                behavior:'smooth',
+                block:'start'
+              })
+          "
         >
 
           <span class="btn-icon">
@@ -796,6 +923,8 @@ function render(){
 
       </div>
 
+
+      <!-- BOTÓN DE EMERGENCIA -->
 
       <button
         class="emergency-button"
@@ -830,19 +959,20 @@ function render(){
         Escaneado vía etiqueta NFC · información de emergencia
       </p>
 
-
     </div>
 
   `;
 
 
+  // Activar función secreta solamente si corresponde
   attachHoldReveal(p);
+
 }
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // LLAMADA DE EMERGENCIA
-// ─────────────────────────────────────────────
+// =====================================================
 
 function emergencyCall(){
 
@@ -873,182 +1003,85 @@ function emergencyCall(){
 }
 
 
-// ─────────────────────────────────────────────
-// TOQUE / MANTENER PRESIONADO
-// ─────────────────────────────────────────────
+// =====================================================
+// FUNCIÓN SECRETA
+// MANTENER FOTO 5 SEGUNDOS
+// =====================================================
 
 function attachHoldReveal(p){
+
+  if(!p.holdReveal || !p.fotoSecreta){
+    return;
+  }
+
 
   const wrap =
     document.querySelector('.photo-wrap');
 
-  if(!wrap) return;
+
+  if(!wrap){
+    return;
+  }
 
 
-  const img =
-    wrap.querySelector('img');
-
-  if(!img) return;
-
-
-  let holdTimer = null;
-
-  let isHolding = false;
-
-  let startX = 0;
-  let startY = 0;
-
-
-  const HOLD_DURATION = 5000;
-
-
-  function iniciarToque(e){
+  const start = (e) => {
 
     if(e.type === 'touchstart'){
-
       e.preventDefault();
-
-      if(e.touches && e.touches[0]){
-
-        startX =
-          e.touches[0].clientX;
-
-        startY =
-          e.touches[0].clientY;
-
-      }
-
     }
 
-
-    isHolding = false;
 
     wrap.classList.add('holding');
 
 
     holdTimer = setTimeout(() => {
 
-      isHolding = true;
-
-
-      if(
-        p.holdReveal &&
-        p.fotoSecreta
-      ){
-
-        triggerSpideyReveal(
-          p,
-          wrap
-        );
-
-      }
+      triggerSpideyReveal(p, wrap);
 
     }, HOLD_DURATION);
 
-  }
+  };
 
 
-  function cancelarToque(){
-
-    clearTimeout(holdTimer);
+  const cancel = () => {
 
     wrap.classList.remove('holding');
 
-  }
-
-
-  function finalizarToque(e){
-
     clearTimeout(holdTimer);
 
-    wrap.classList.remove('holding');
+  };
 
-
-    if(!isHolding){
-
-      abrirFoto(img.src);
-
-    }
-
-
-    isHolding = false;
-
-  }
-
-
-  function moverDedo(e){
-
-    if(
-      !e.touches ||
-      !e.touches[0]
-    ) return;
-
-
-    const x =
-      e.touches[0].clientX;
-
-    const y =
-      e.touches[0].clientY;
-
-
-    const distancia =
-      Math.sqrt(
-        Math.pow(x - startX, 2) +
-        Math.pow(y - startY, 2)
-      );
-
-
-    // Si el dedo se mueve demasiado,
-    // cancelamos el gesto.
-    if(distancia > 15){
-
-      cancelarToque();
-
-    }
-
-  }
-
-
-  // PC
 
   wrap.addEventListener(
     'mousedown',
-    iniciarToque
+    start
   );
 
   wrap.addEventListener(
     'mouseup',
-    finalizarToque
+    cancel
   );
 
   wrap.addEventListener(
     'mouseleave',
-    cancelarToque
+    cancel
   );
 
 
-  // CELULAR
-
   wrap.addEventListener(
     'touchstart',
-    iniciarToque,
+    start,
     {passive:false}
   );
 
   wrap.addEventListener(
-    'touchmove',
-    moverDedo,
-    {passive:true}
-  );
-
-  wrap.addEventListener(
     'touchend',
-    finalizarToque
+    cancel
   );
 
   wrap.addEventListener(
     'touchcancel',
-    cancelarToque
+    cancel
   );
 
 
@@ -1060,9 +1093,9 @@ function attachHoldReveal(p){
 }
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // REVELAR SPIDER-MAN
-// ─────────────────────────────────────────────
+// =====================================================
 
 function triggerSpideyReveal(p, wrap){
 
@@ -1072,21 +1105,24 @@ function triggerSpideyReveal(p, wrap){
   const overlay =
     document.createElement('div');
 
+
   overlay.className =
     'spidey-overlay';
 
 
-  overlay.innerHTML =
-    '<span class="spidey-emoji">🕷️</span>';
+  overlay.innerHTML = `
+    <span class="spidey-emoji">
+      🕷️
+    </span>
+  `;
 
 
-  document.body.appendChild(
-    overlay
-  );
+  document.body.appendChild(overlay);
 
 
   setTimeout(() => {
 
+    // Cambiar fotografía
     const img =
       wrap.querySelector('img');
 
@@ -1096,48 +1132,44 @@ function triggerSpideyReveal(p, wrap){
       img.src =
         p.fotoSecreta;
 
+      // La nueva foto también puede abrirse
+      img.onclick = () => {
+        abrirFoto(img.src);
+      };
+
     }
 
 
-    overlay.remove();
-
+    // ---------------------------------------------
+    // AHORA SÍ mostrar identidad secreta
+    // ---------------------------------------------
 
     const campo =
-      document.getElementById(
-        'campo-identidad'
-      );
+      document.getElementById('campo-identidad');
 
 
     if(campo){
 
-      campo.classList.add(
-        'mostrar'
-      );
+      campo.classList.add('mostrar');
 
     }
+
+
+    overlay.remove();
 
   }, 1400);
 
 }
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // VISOR DE FOTO
-// ─────────────────────────────────────────────
+// =====================================================
 
 function abrirFoto(src){
 
-  if(!src) return;
-
-
-  if(
-    document.querySelector(
-      '.visor-foto'
-    )
-  ){
-
+  if(document.querySelector('.visor-foto')){
     return;
-
   }
 
 
@@ -1171,27 +1203,13 @@ function abrirFoto(src){
       &times;
     </button>
 
-    <div class="visor-contenido">
-
-      <img
-        src="${src}"
-        alt="Foto ampliada"
-        draggable="false"
-      >
-
-    </div>
+    <img
+      src="${src}"
+      alt="Foto ampliada"
+      draggable="false"
+    >
 
   `;
-
-
-  document.body.appendChild(
-    visor
-  );
-
-
-  // Evitar scroll de la página
-  document.body.style.overflow =
-    'hidden';
 
 
   const cerrarVisor = () => {
@@ -1201,12 +1219,7 @@ function abrirFoto(src){
       manejarTecla
     );
 
-
     visor.remove();
-
-
-    document.body.style.overflow =
-      '';
 
   };
 
@@ -1228,12 +1241,7 @@ function abrirFoto(src){
 
       if(
         e.target === visor ||
-        e.target.classList.contains(
-          'cerrar'
-        ) ||
-        e.target.classList.contains(
-          'visor-contenido'
-        )
+        e.target.classList.contains('cerrar')
       ){
 
         cerrarVisor();
@@ -1249,12 +1257,15 @@ function abrirFoto(src){
     manejarTecla
   );
 
+
+  document.body.appendChild(visor);
+
 }
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // HASH
-// ─────────────────────────────────────────────
+// =====================================================
 
 window.addEventListener(
   'hashchange',
@@ -1265,30 +1276,25 @@ window.addEventListener(
 render();
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // TEMA
-// ─────────────────────────────────────────────
+// =====================================================
 
 function updateToggleIcon(){
 
   const btn =
-    document.getElementById(
-      'theme-toggle'
-    );
+    document.getElementById('theme-toggle');
 
 
   const isLight =
     document.documentElement
-      .getAttribute('data-theme')
-      === 'light';
+      .getAttribute('data-theme') === 'light';
 
 
   if(btn){
 
     btn.textContent =
-      isLight
-        ? '🌙'
-        : '☀️';
+      isLight ? '🌙' : '☀️';
 
   }
 
@@ -1306,9 +1312,7 @@ document
 
 
       const isLight =
-        root.getAttribute(
-          'data-theme'
-        ) === 'light';
+        root.getAttribute('data-theme') === 'light';
 
 
       if(isLight){
@@ -1346,9 +1350,9 @@ document
 updateToggleIcon();
 
 
-// ─────────────────────────────────────────────
+// =====================================================
 // SPLASH
-// ─────────────────────────────────────────────
+// =====================================================
 
 window.addEventListener(
   'load',
@@ -1358,9 +1362,7 @@ window.addEventListener(
       function(){
 
         const splash =
-          document.getElementById(
-            'splash'
-          );
+          document.getElementById('splash');
 
 
         if(splash){
