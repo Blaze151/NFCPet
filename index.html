@@ -6,6 +6,7 @@
 <title>Ficha de emergencia</title>
 <link rel="icon" type="image/svg+xml" href="logo/tagmex-vital-isotipo-negro-rojo.svg">
 <link rel="stylesheet" href="style.css">
+
 <script>
 (function(){
   try{
@@ -16,6 +17,7 @@
 })();
 </script>
 </head>
+
 <body>
 
 <div id="splash" class="splash">
@@ -26,14 +28,20 @@
 
 <div class="page">
   <div class="card" id="card"></div>
+
   <div class="brand-footer">
     <img src="logo/tagmex-vital-logotipo-negro-rojo.svg" alt="Tagmex Vital" class="brand-footer-logo">
   </div>
 </div>
 
 <script>
-// ── Base de datos: agrega o modifica perfiles aquí ──
+
+// ─────────────────────────────────────────────
+// BASE DE DATOS
+// ─────────────────────────────────────────────
+
 const PERFILES = {
+
   abi: {
     tipo: "mascota",
     nombre: "Abi",
@@ -43,13 +51,17 @@ const PERFILES = {
     tipoSangre: "N/A",
     alergias: "N/A",
     condicionMedica: "N/A",
+
     telefonos: [
       { etiqueta: "Humberto Morales Carrillo", numero: "8713588027" },
       { etiqueta: "Daniel Hernández Bajini", numero: "8716044220" }
     ],
+
     direccion: "Aula 34G, Instituto Tecnológico de la Laguna",
+
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   },
+
 
   humberto: {
     tipo: "persona",
@@ -62,53 +74,82 @@ const PERFILES = {
     condicionMedica: "N/A",
     correo: "",
     ocupacion: "Estudiante de Ingeniería Electrónica",
+
     telefonos: [
       { etiqueta: "Ing. Sergio Guardado", numero: "8711044146" }
     ],
+
     direccion: "Edificio 34F, Instituto Tecnológico de la Laguna",
+
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   },
+
 
   sergio: {
     tipo: "persona",
     nombre: "Sergio Alejandro Guardado Martínez",
     detalle: "38 años · Docente Titular C · Coordinador de Ingeniería Electrónica y Semiconductores",
+
     foto: "1.img/sergio.jpg",
+
     holdReveal: true,
     fotoSecreta: "1.img/sergio-spiderman.jpg",
+
     critico: "",
     tipoSangre: "A+",
     alergias: "No especificadas",
     condicionMedica: "N/A",
+
     correo: "sergioteclaguna@gmail.com",
+
     ocupacion: "Docente de tiempo completo Titular C en el Instituto Tecnológico de la Laguna (Tecnológico Nacional de México). Coordinador de Ingeniería Electrónica e Ingeniería en Semiconductores.",
+
     estudios: [
       "Ingeniero en Electrónica",
       "Maestría en Educación",
       "Maestría en Ciencias en Ingeniería Eléctrica"
     ],
+
     hobbies: "🏍️ Motociclista",
+
     identidad: "🕷️ Spider-Man",
+
     telefonos: [
       { etiqueta: "Sergio Alejandro", numero: "8711044146" },
       { etiqueta: "Adriana Puentes (Emergencia)", numero: "8713962060" }
     ],
+
     telefonoEmergencia: "8713962060",
+
     direccion: "Instituto Tecnológico de la Laguna, Torreón, Coahuila",
+
     mapsUrl: "https://maps.google.com/?q=Instituto+Tecnológico+de+la+Laguna,+Torreón,+Coahuila"
   }
+
 };
 
-let holdTimer = null;
-const HOLD_DURATION = 5000;
+
+// ─────────────────────────────────────────────
+// FUNCIONES GENERALES
+// ─────────────────────────────────────────────
 
 function hasValue(value){
+
   if(value === undefined || value === null) return false;
+
   const text = String(value).trim().toLowerCase();
-  return text !== '' && text !== 'n/a' && text !== 'no especificadas' && text !== 'no especificado';
+
+  return (
+    text !== '' &&
+    text !== 'n/a' &&
+    text !== 'no especificadas' &&
+    text !== 'no especificado'
+  );
 }
 
+
 function icon(type){
+
   const icons = {
     medical:'♥',
     allergy:'⚠',
@@ -121,288 +162,1232 @@ function icon(type){
     studies:'▥',
     hobby:'★'
   };
+
   return icons[type] || '•';
 }
 
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+
 function render(){
+
   const id = location.hash.slice(1).toLowerCase();
+
   const p = PERFILES[id];
+
   const card = document.getElementById('card');
 
+
   if(!p){
+
     card.innerHTML = `
       <div class="body">
         <div class="section-card">
           <div class="empty">
             <p>Esta ficha no está activa todavía.</p>
-            <p>Verifica el enlace, por ejemplo:<br><code>${location.origin}${location.pathname}#abi</code></p>
+
+            <p>
+              Verifica el enlace, por ejemplo:<br>
+              <code>${location.origin}${location.pathname}#abi</code>
+            </p>
           </div>
         </div>
-      </div>`;
+      </div>
+    `;
+
     return;
   }
 
+
+  // ─────────────────────────────────────────
+  // FOTO
+  // ─────────────────────────────────────────
+
   const fotoHtml = p.foto
-    ? `<img src="${p.foto}" alt="${p.nombre}" onclick="abrirFoto(this.src)" loading="lazy" draggable="false" oncontextmenu="return false;">`
-    : `<div class="ph-fallback">${p.tipo === 'mascota' ? '🐾' : (p.tipo === 'niño' ? '🧒' : '🧑')}</div>`;
+
+    ? `
+      <img
+        src="${p.foto}"
+        alt="${p.nombre}"
+        class="foto-perfil"
+        loading="lazy"
+        draggable="false"
+        oncontextmenu="return false;"
+      >
+    `
+
+    : `
+      <div class="ph-fallback">
+        ${p.tipo === 'mascota'
+          ? '🐾'
+          : (p.tipo === 'niño' ? '🧒' : '🧑')}
+      </div>
+    `;
+
+
+  // ─────────────────────────────────────────
+  // ALERTAS MÉDICAS
+  // ─────────────────────────────────────────
 
   const allergyTag = hasValue(p.alergias)
-    ? `<div class="alert-tag"><span class="tag-icon">⚠</span><span><strong>Alergia:</strong> ${p.alergias}</span></div>` : '';
+
+    ? `
+      <div class="alert-tag">
+        <span class="tag-icon">⚠</span>
+        <span>
+          <strong>Alergia:</strong> ${p.alergias}
+        </span>
+      </div>
+    `
+
+    : '';
+
+
   const conditionTag = hasValue(p.condicionMedica)
-    ? `<div class="alert-tag"><span class="tag-icon">♥</span><span><strong>Condición:</strong> ${p.condicionMedica}</span></div>` : '';
+
+    ? `
+      <div class="alert-tag">
+        <span class="tag-icon">♥</span>
+        <span>
+          <strong>Condición:</strong> ${p.condicionMedica}
+        </span>
+      </div>
+    `
+
+    : '';
+
 
   const medicalTags = allergyTag || conditionTag
-    ? `<div class="alert-tags">${allergyTag}${conditionTag}</div>` : '';
 
-  const telefonosHtml = (p.telefonos || []).map(t => `
-    <div class="contact-row">
-      <div class="contact-main">
-        <div class="contact-name">${t.etiqueta}</div>
-        <span class="contact-phone">${t.numero}</span>
+    ? `
+      <div class="alert-tags">
+        ${allergyTag}
+        ${conditionTag}
       </div>
-      <a class="call-circle" href="tel:${t.numero}" aria-label="Llamar a ${t.etiqueta}">☎</a>
-    </div>`).join('');
+    `
+
+    : '';
+
+
+  // ─────────────────────────────────────────
+  // TELÉFONOS
+  // ─────────────────────────────────────────
+
+  const telefonosHtml = (p.telefonos || [])
+    .map(t => `
+
+      <div class="contact-row">
+
+        <div class="contact-main">
+
+          <div class="contact-name">
+            ${t.etiqueta}
+          </div>
+
+          <span class="contact-phone">
+            ${t.numero}
+          </span>
+
+        </div>
+
+        <a
+          class="call-circle"
+          href="tel:${t.numero}"
+          aria-label="Llamar a ${t.etiqueta}"
+        >
+          ☎
+        </a>
+
+      </div>
+
+    `)
+    .join('');
+
+
+  // ─────────────────────────────────────────
+  // DIRECCIÓN
+  // ─────────────────────────────────────────
 
   const direccionHtml = p.mapsUrl
-    ? `<a class="v" href="${p.mapsUrl}" target="_blank" rel="noopener">${p.direccion}</a>`
-    : `<span class="v">${p.direccion}</span>`;
+
+    ? `
+      <a
+        class="v"
+        href="${p.mapsUrl}"
+        target="_blank"
+        rel="noopener"
+      >
+        ${p.direccion}
+      </a>
+    `
+
+    : `
+      <span class="v">
+        ${p.direccion}
+      </span>
+    `;
+
+
+  // ─────────────────────────────────────────
+  // HTML PRINCIPAL
+  // ─────────────────────────────────────────
 
   card.innerHTML = `
+
     <div class="topbar">
+
       <div class="topbar-brand">
-        <img src="logo/tagmex-vital-isotipo-blanco-rojo.svg" alt="Tagmex Vital" class="topbar-logo">
-        <span class="topbar-title">Ficha de emergencia</span>
+
+        <img
+          src="logo/tagmex-vital-isotipo-blanco-rojo.svg"
+          alt="Tagmex Vital"
+          class="topbar-logo"
+        >
+
+        <span class="topbar-title">
+          Ficha de emergencia
+        </span>
+
       </div>
-      <div class="nfc-badge"><span class="nfc-icon">◉</span> NFC</div>
+
+      <div class="nfc-badge">
+        <span class="nfc-icon">◉</span>
+        NFC
+      </div>
+
     </div>
 
+
     <section class="hero">
+
       <div class="hero-photo-wrap">
-        <div class="photo-wrap">${fotoHtml}</div>
-        <div class="medical-plus">+</div>
+
+        <div class="photo-wrap">
+
+          ${fotoHtml}
+
+        </div>
+
+        <div class="medical-plus">
+          +
+        </div>
+
       </div>
-      <h1>${p.nombre}</h1>
-      <p class="sub">${p.detalle}</p>
+
+
+      <h1>
+        ${p.nombre}
+      </h1>
+
+
+      <p class="sub">
+        ${p.detalle}
+      </p>
+
 
       <div class="medical-summary">
+
         <div class="blood-card">
-          <span class="blood-value">${p.tipoSangre || 'N/A'}</span>
-          <span class="blood-label">Tipo de sangre</span>
+
+          <span class="blood-value">
+            ${p.tipoSangre || 'N/A'}
+          </span>
+
+          <span class="blood-label">
+            Tipo de sangre
+          </span>
+
         </div>
+
         ${medicalTags}
+
       </div>
+
     </section>
 
+
     <div class="body">
+
+
       ${p.critico ? `
-      <div class="section-card">
-        <div class="section-heading"><span class="heading-icon">⚠</span> Importante</div>
-        <div class="field"><span class="v" style="text-align:left;width:100%;">${p.critico}</span></div>
-      </div>` : ''}
+
+        <div class="section-card">
+
+          <div class="section-heading">
+            <span class="heading-icon">⚠</span>
+            Importante
+          </div>
+
+          <div class="field">
+
+            <span
+              class="v"
+              style="text-align:left;width:100%;"
+            >
+              ${p.critico}
+            </span>
+
+          </div>
+
+        </div>
+
+      ` : ''}
+
 
       <div class="section-card">
-        <div class="section-heading"><span class="heading-icon">♥</span> Información médica</div>
+
+        <div class="section-heading">
+
+          <span class="heading-icon">
+            ♥
+          </span>
+
+          Información médica
+
+        </div>
+
+
         ${hasValue(p.alergias) ? `
-        <div class="field">
-          <span class="k"><span class="field-icon">⚠</span>Alergias</span>
-          <span class="v">${p.alergias}</span>
-        </div>` : ''}
+
+          <div class="field">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ⚠
+              </span>
+
+              Alergias
+
+            </span>
+
+            <span class="v">
+              ${p.alergias}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
         ${hasValue(p.condicionMedica) ? `
+
+          <div class="field">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ♥
+              </span>
+
+              Condiciones médicas
+
+            </span>
+
+            <span class="v">
+              ${p.condicionMedica}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
         <div class="field">
-          <span class="k"><span class="field-icon">♥</span>Condiciones médicas</span>
-          <span class="v">${p.condicionMedica}</span>
-        </div>` : ''}
-        <div class="field">
-          <span class="k"><span class="field-icon">●</span>Tipo de sangre</span>
-          <span class="v">${p.tipoSangre || 'N/A'}</span>
+
+          <span class="k">
+
+            <span class="field-icon">
+              ●
+            </span>
+
+            Tipo de sangre
+
+          </span>
+
+          <span class="v">
+            ${p.tipoSangre || 'N/A'}
+          </span>
+
         </div>
+
       </div>
+
 
       <div class="section-card">
-        <div class="section-heading"><span class="heading-icon">♧</span> Contacto de emergencia</div>
-        ${telefonosHtml || '<div class="field"><span class="v" style="text-align:left;width:100%;">Sin contactos registrados.</span></div>'}
+
+        <div class="section-heading">
+
+          <span class="heading-icon">
+            ♧
+          </span>
+
+          Contacto de emergencia
+
+        </div>
+
+        ${
+          telefonosHtml ||
+
+          `
+            <div class="field">
+
+              <span
+                class="v"
+                style="text-align:left;width:100%;"
+              >
+                Sin contactos registrados.
+              </span>
+
+            </div>
+          `
+        }
+
       </div>
 
-      <div class="section-card" id="informacion-personal">
-        <div class="section-heading"><span class="heading-icon">●</span> Información personal</div>
-        ${p.correo ? `
-        <div class="field">
-          <span class="k"><span class="field-icon">✉</span>Correo</span>
-          <a class="v" href="mailto:${p.correo}">${p.correo}</a>
-        </div>` : ''}
-        ${p.fechaNacimiento ? `
-        <div class="field">
-          <span class="k"><span class="field-icon">▣</span>Fecha de nacimiento</span>
-          <span class="v">${p.fechaNacimiento}</span>
-        </div>` : ''}
-        ${p.ocupacion ? `
-        <div class="field long">
-          <span class="k"><span class="field-icon">▤</span>Ocupación</span>
-          <span class="v">${p.ocupacion}</span>
-        </div>` : ''}
-        ${p.estudios ? `
-        <div class="field long">
-          <span class="k"><span class="field-icon">▥</span>Estudios</span>
-          <span class="v">${p.estudios.join('<br>')}</span>
-        </div>` : ''}
-        ${p.hobbies ? `
-        <div class="field">
-          <span class="k"><span class="field-icon">★</span>Hobbies</span>
-          <span class="v">${p.hobbies}</span>
-        </div>` : ''}
-        <div class="field long">
-          <span class="k"><span class="field-icon">⌖</span>Dirección</span>
-          ${direccionHtml}
+
+      <div
+        class="section-card"
+        id="informacion-personal"
+      >
+
+        <div class="section-heading">
+
+          <span class="heading-icon">
+            ●
+          </span>
+
+          Información personal
+
         </div>
+
+
+        ${p.correo ? `
+
+          <div class="field">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ✉
+              </span>
+
+              Correo
+
+            </span>
+
+            <a
+              class="v"
+              href="mailto:${p.correo}"
+            >
+              ${p.correo}
+            </a>
+
+          </div>
+
+        ` : ''}
+
+
+        ${p.fechaNacimiento ? `
+
+          <div class="field">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ▣
+              </span>
+
+              Fecha de nacimiento
+
+            </span>
+
+            <span class="v">
+              ${p.fechaNacimiento}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
+        ${p.ocupacion ? `
+
+          <div class="field long">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ▤
+              </span>
+
+              Ocupación
+
+            </span>
+
+            <span class="v">
+              ${p.ocupacion}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
+        ${p.estudios ? `
+
+          <div class="field long">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ▥
+              </span>
+
+              Estudios
+
+            </span>
+
+            <span class="v">
+              ${p.estudios.join('<br>')}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
+        ${p.hobbies ? `
+
+          <div class="field">
+
+            <span class="k">
+
+              <span class="field-icon">
+                ★
+              </span>
+
+              Hobbies
+
+            </span>
+
+            <span class="v">
+              ${p.hobbies}
+            </span>
+
+          </div>
+
+        ` : ''}
+
+
+        <div class="field long">
+
+          <span class="k">
+
+            <span class="field-icon">
+              ⌖
+            </span>
+
+            Dirección
+
+          </span>
+
+          ${direccionHtml}
+
+        </div>
+
+
         ${p.identidad ? `
-        <div class="field oculto" id="campo-identidad">
-          <span class="k"><span class="field-icon">★</span>Identidad secreta</span>
-          <span class="v">${p.identidad}</span>
-        </div>` : ''}
+
+          <div
+            class="field oculto"
+            id="campo-identidad"
+          >
+
+            <span class="k">
+
+              <span class="field-icon">
+                ★
+              </span>
+
+              Identidad secreta
+
+            </span>
+
+            <span class="v">
+              ${p.identidad}
+            </span>
+
+          </div>
+
+        ` : ''}
+
       </div>
+
 
       <div class="actions">
-        <a class="btn primary" href="tel:${p.telefonos && p.telefonos[0] ? p.telefonos[0].numero : ''}">
-          <span class="btn-icon">☎</span><span>Llamar</span>
+
+
+        <a
+          class="btn primary"
+          href="tel:${
+            p.telefonos && p.telefonos[0]
+              ? p.telefonos[0].numero
+              : ''
+          }"
+        >
+
+          <span class="btn-icon">
+            ☎
+          </span>
+
+          <span>
+            Llamar
+          </span>
+
         </a>
-        ${p.mapsUrl ? `<a class="btn secondary" href="${p.mapsUrl}" target="_blank" rel="noopener"><span class="btn-icon">⌖</span><span>Ver mapa</span></a>` : ''}
-        <button class="btn" type="button" onclick="document.getElementById('informacion-personal').scrollIntoView({behavior:'smooth',block:'start'})">
-          <span class="btn-icon">✚</span><span>Más información</span>
+
+
+        ${
+          p.mapsUrl
+
+          ? `
+
+            <a
+              class="btn secondary"
+              href="${p.mapsUrl}"
+              target="_blank"
+              rel="noopener"
+            >
+
+              <span class="btn-icon">
+                ⌖
+              </span>
+
+              <span>
+                Ver mapa
+              </span>
+
+            </a>
+
+          `
+
+          : ''
+        }
+
+
+        <button
+          class="btn"
+          type="button"
+          onclick="document.getElementById('informacion-personal').scrollIntoView({behavior:'smooth',block:'start'})"
+        >
+
+          <span class="btn-icon">
+            ✚
+          </span>
+
+          <span>
+            Más información
+          </span>
+
         </button>
+
       </div>
 
-      <button class="emergency-button" type="button" onclick="emergencyCall()">
-        <span class="em-icon">⚠</span>
-        <span><strong>En caso de emergencia</strong><span>Presiona para llamar al contacto de emergencia</span></span>
-        <span class="arrow">›</span>
+
+      <button
+        class="emergency-button"
+        type="button"
+        onclick="emergencyCall()"
+      >
+
+        <span class="em-icon">
+          ⚠
+        </span>
+
+        <span>
+
+          <strong>
+            En caso de emergencia
+          </strong>
+
+          <span>
+            Presiona para llamar al contacto de emergencia
+          </span>
+
+        </span>
+
+        <span class="arrow">
+          ›
+        </span>
+
       </button>
 
-      <p class="foot">Escaneado vía etiqueta NFC · información de emergencia</p>
-    </div>`;
+
+      <p class="foot">
+        Escaneado vía etiqueta NFC · información de emergencia
+      </p>
+
+
+    </div>
+
+  `;
+
 
   attachHoldReveal(p);
 }
 
+
+// ─────────────────────────────────────────────
+// LLAMADA DE EMERGENCIA
+// ─────────────────────────────────────────────
+
 function emergencyCall(){
+
   const id = location.hash.slice(1).toLowerCase();
+
   const p = PERFILES[id];
+
   if(!p) return;
 
-  // Si existe un número de emergencia específico, usa ese número.
-  // Si no existe, utiliza el primer contacto registrado como respaldo.
-  const numero = p.telefonoEmergencia || (p.telefonos && p.telefonos[0] ? p.telefonos[0].numero : '');
+
+  const numero =
+    p.telefonoEmergencia ||
+    (
+      p.telefonos &&
+      p.telefonos[0]
+        ? p.telefonos[0].numero
+        : ''
+    );
+
 
   if(numero){
-    window.location.href = 'tel:' + numero;
+
+    window.location.href =
+      'tel:' + numero;
+
   }
+
 }
 
-// ── Mantener presionada la foto para revelar identidad secreta ──
+
+// ─────────────────────────────────────────────
+// TOQUE / MANTENER PRESIONADO
+// ─────────────────────────────────────────────
+
 function attachHoldReveal(p){
-  if(!p.holdReveal || !p.fotoSecreta) return;
-  const wrap = document.querySelector('.photo-wrap');
+
+  const wrap =
+    document.querySelector('.photo-wrap');
+
   if(!wrap) return;
 
-  const start = (e) => {
-    if(e.type === 'touchstart') e.preventDefault();
-    wrap.classList.add('holding');
-    holdTimer = setTimeout(() => triggerSpideyReveal(p, wrap), HOLD_DURATION);
-  };
-  const cancel = () => {
-    wrap.classList.remove('holding');
-    clearTimeout(holdTimer);
-  };
 
-  wrap.addEventListener('mousedown', start);
-  wrap.addEventListener('mouseup', cancel);
-  wrap.addEventListener('mouseleave', cancel);
-  wrap.addEventListener('touchstart', start, {passive:false});
-  wrap.addEventListener('touchend', cancel);
-  wrap.addEventListener('touchcancel', cancel);
-  wrap.addEventListener('contextmenu', e => e.preventDefault());
+  const img =
+    wrap.querySelector('img');
+
+  if(!img) return;
+
+
+  let holdTimer = null;
+
+  let isHolding = false;
+
+  let startX = 0;
+  let startY = 0;
+
+
+  const HOLD_DURATION = 5000;
+
+
+  function iniciarToque(e){
+
+    if(e.type === 'touchstart'){
+
+      e.preventDefault();
+
+      if(e.touches && e.touches[0]){
+
+        startX =
+          e.touches[0].clientX;
+
+        startY =
+          e.touches[0].clientY;
+
+      }
+
+    }
+
+
+    isHolding = false;
+
+    wrap.classList.add('holding');
+
+
+    holdTimer = setTimeout(() => {
+
+      isHolding = true;
+
+
+      if(
+        p.holdReveal &&
+        p.fotoSecreta
+      ){
+
+        triggerSpideyReveal(
+          p,
+          wrap
+        );
+
+      }
+
+    }, HOLD_DURATION);
+
+  }
+
+
+  function cancelarToque(){
+
+    clearTimeout(holdTimer);
+
+    wrap.classList.remove('holding');
+
+  }
+
+
+  function finalizarToque(e){
+
+    clearTimeout(holdTimer);
+
+    wrap.classList.remove('holding');
+
+
+    if(!isHolding){
+
+      abrirFoto(img.src);
+
+    }
+
+
+    isHolding = false;
+
+  }
+
+
+  function moverDedo(e){
+
+    if(
+      !e.touches ||
+      !e.touches[0]
+    ) return;
+
+
+    const x =
+      e.touches[0].clientX;
+
+    const y =
+      e.touches[0].clientY;
+
+
+    const distancia =
+      Math.sqrt(
+        Math.pow(x - startX, 2) +
+        Math.pow(y - startY, 2)
+      );
+
+
+    // Si el dedo se mueve demasiado,
+    // cancelamos el gesto.
+    if(distancia > 15){
+
+      cancelarToque();
+
+    }
+
+  }
+
+
+  // PC
+
+  wrap.addEventListener(
+    'mousedown',
+    iniciarToque
+  );
+
+  wrap.addEventListener(
+    'mouseup',
+    finalizarToque
+  );
+
+  wrap.addEventListener(
+    'mouseleave',
+    cancelarToque
+  );
+
+
+  // CELULAR
+
+  wrap.addEventListener(
+    'touchstart',
+    iniciarToque,
+    {passive:false}
+  );
+
+  wrap.addEventListener(
+    'touchmove',
+    moverDedo,
+    {passive:true}
+  );
+
+  wrap.addEventListener(
+    'touchend',
+    finalizarToque
+  );
+
+  wrap.addEventListener(
+    'touchcancel',
+    cancelarToque
+  );
+
+
+  wrap.addEventListener(
+    'contextmenu',
+    e => e.preventDefault()
+  );
+
 }
+
+
+// ─────────────────────────────────────────────
+// REVELAR SPIDER-MAN
+// ─────────────────────────────────────────────
 
 function triggerSpideyReveal(p, wrap){
+
   wrap.classList.remove('holding');
-  const overlay = document.createElement('div');
-  overlay.className = 'spidey-overlay';
-  overlay.innerHTML = '<span class="spidey-emoji">🕷️</span>';
-  document.body.appendChild(overlay);
+
+
+  const overlay =
+    document.createElement('div');
+
+  overlay.className =
+    'spidey-overlay';
+
+
+  overlay.innerHTML =
+    '<span class="spidey-emoji">🕷️</span>';
+
+
+  document.body.appendChild(
+    overlay
+  );
+
 
   setTimeout(() => {
-    const img = wrap.querySelector('img');
-    if(img) img.src = p.fotoSecreta;
+
+    const img =
+      wrap.querySelector('img');
+
+
+    if(img){
+
+      img.src =
+        p.fotoSecreta;
+
+    }
+
+
     overlay.remove();
-    const campo = document.getElementById('campo-identidad');
-    if(campo) campo.classList.add('mostrar');
+
+
+    const campo =
+      document.getElementById(
+        'campo-identidad'
+      );
+
+
+    if(campo){
+
+      campo.classList.add(
+        'mostrar'
+      );
+
+    }
+
   }, 1400);
+
 }
+
+
+// ─────────────────────────────────────────────
+// VISOR DE FOTO
+// ─────────────────────────────────────────────
 
 function abrirFoto(src){
-  if(document.querySelector('.visor-foto')) return;
 
-  const visor = document.createElement('div');
-  visor.className = 'visor-foto';
-  visor.setAttribute('role', 'dialog');
-  visor.setAttribute('aria-modal', 'true');
+  if(!src) return;
+
+
+  if(
+    document.querySelector(
+      '.visor-foto'
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const visor =
+    document.createElement('div');
+
+
+  visor.className =
+    'visor-foto';
+
+
+  visor.setAttribute(
+    'role',
+    'dialog'
+  );
+
+
+  visor.setAttribute(
+    'aria-modal',
+    'true'
+  );
+
+
   visor.innerHTML = `
-    <button class="cerrar" type="button" aria-label="Cerrar foto">&times;</button>
-    <img src="${src}" alt="Foto ampliada">
+
+    <button
+      class="cerrar"
+      type="button"
+      aria-label="Cerrar foto"
+    >
+      &times;
+    </button>
+
+    <div class="visor-contenido">
+
+      <img
+        src="${src}"
+        alt="Foto ampliada"
+        draggable="false"
+      >
+
+    </div>
+
   `;
 
+
+  document.body.appendChild(
+    visor
+  );
+
+
+  // Evitar scroll de la página
+  document.body.style.overflow =
+    'hidden';
+
+
   const cerrarVisor = () => {
-    document.removeEventListener('keydown', manejarTecla);
+
+    document.removeEventListener(
+      'keydown',
+      manejarTecla
+    );
+
+
     visor.remove();
+
+
+    document.body.style.overflow =
+      '';
+
   };
+
 
   const manejarTecla = (e) => {
-    if(e.key === 'Escape') cerrarVisor();
+
+    if(e.key === 'Escape'){
+
+      cerrarVisor();
+
+    }
+
   };
 
-  visor.addEventListener('click', (e) => {
-    if(e.target === visor || e.target.classList.contains('cerrar')) {
-      cerrarVisor();
-    }
-  });
 
-  document.addEventListener('keydown', manejarTecla);
-  document.body.appendChild(visor);
+  visor.addEventListener(
+    'click',
+    (e) => {
+
+      if(
+        e.target === visor ||
+        e.target.classList.contains(
+          'cerrar'
+        ) ||
+        e.target.classList.contains(
+          'visor-contenido'
+        )
+      ){
+
+        cerrarVisor();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    'keydown',
+    manejarTecla
+  );
+
 }
 
-window.addEventListener('hashchange', render);
+
+// ─────────────────────────────────────────────
+// HASH
+// ─────────────────────────────────────────────
+
+window.addEventListener(
+  'hashchange',
+  render
+);
+
+
 render();
 
-// ── Tema ──
+
+// ─────────────────────────────────────────────
+// TEMA
+// ─────────────────────────────────────────────
+
 function updateToggleIcon(){
-  const btn = document.getElementById('theme-toggle');
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  if(btn) btn.textContent = isLight ? '🌙' : '☀️';
+
+  const btn =
+    document.getElementById(
+      'theme-toggle'
+    );
+
+
+  const isLight =
+    document.documentElement
+      .getAttribute('data-theme')
+      === 'light';
+
+
+  if(btn){
+
+    btn.textContent =
+      isLight
+        ? '🌙'
+        : '☀️';
+
+  }
+
 }
 
-document.getElementById('theme-toggle').addEventListener('click', function(){
-  const root = document.documentElement;
-  const isLight = root.getAttribute('data-theme') === 'light';
-  if(isLight){
-    root.removeAttribute('data-theme');
-    localStorage.setItem('tagmex-theme','dark');
-  }else{
-    root.setAttribute('data-theme','light');
-    localStorage.setItem('tagmex-theme','light');
-  }
-  updateToggleIcon();
-});
+
+document
+  .getElementById('theme-toggle')
+  .addEventListener(
+    'click',
+    function(){
+
+      const root =
+        document.documentElement;
+
+
+      const isLight =
+        root.getAttribute(
+          'data-theme'
+        ) === 'light';
+
+
+      if(isLight){
+
+        root.removeAttribute(
+          'data-theme'
+        );
+
+        localStorage.setItem(
+          'tagmex-theme',
+          'dark'
+        );
+
+      }else{
+
+        root.setAttribute(
+          'data-theme',
+          'light'
+        );
+
+        localStorage.setItem(
+          'tagmex-theme',
+          'light'
+        );
+
+      }
+
+
+      updateToggleIcon();
+
+    }
+  );
+
+
 updateToggleIcon();
 
-// ── Splash ──
-window.addEventListener('load', function(){
-  setTimeout(function(){
-    const splash = document.getElementById('splash');
-    if(splash){
-      splash.classList.add('splash-hide');
-      setTimeout(function(){splash.remove();},600);
-    }
-  },1800);
-});
+
+// ─────────────────────────────────────────────
+// SPLASH
+// ─────────────────────────────────────────────
+
+window.addEventListener(
+  'load',
+  function(){
+
+    setTimeout(
+      function(){
+
+        const splash =
+          document.getElementById(
+            'splash'
+          );
+
+
+        if(splash){
+
+          splash.classList.add(
+            'splash-hide'
+          );
+
+
+          setTimeout(
+            function(){
+
+              splash.remove();
+
+            },
+            600
+          );
+
+        }
+
+      },
+      1800
+    );
+
+  }
+);
+
 </script>
 
 </body>
